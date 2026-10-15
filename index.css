@@ -1,0 +1,242 @@
+:root {
+    --site-navbar-height: 76px;
+    --site-nav-padding: 7%;
+    --site-bg: #ffffff;
+    --site-border: #eaecf0;
+    --site-text: #172033;
+    --site-muted: #475467;
+    --site-accent: #1677ff;
+    --site-button-bg: #eef2f5;
+    --site-button-border: #d6dbe3;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+.navbar,
+.about-navbar,
+.contact-navbar,
+.dashboard-navbar,
+.explore-navbar,
+.planner-navbar,
+.legal-navbar,
+.trip-details-navbar,
+.admin-navbar {
+    height: var(--site-navbar-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 0 var(--site-nav-padding);
+    background: var(--site-bg);
+    border-bottom: 1px solid var(--site-border);
+    position: relative;
+    z-index: 10;
+}
+
+.logo,
+.about-logo,
+.contact-logo,
+.dashboard-logo,
+.explore-logo,
+.planner-logo,
+.legal-logo,
+.trip-details-logo,
+.admin-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--site-text);
+    text-decoration: none;
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+}
+
+.nav-links,
+.about-nav-links,
+.contact-nav-links,
+.dashboard-nav-links,
+.explore-nav-links,
+.planner-nav-links,
+.legal-nav-links,
+.trip-details-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.nav-links a,
+.about-nav-links a,
+.contact-nav-links a,
+.explore-nav-links a,
+.planner-nav-links a,
+.legal-nav-links a,
+.trip-details-nav-links a,
+.dashboard-nav-links button {
+    color: var(--site-muted);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover,
+.about-nav-links a:hover,
+.contact-nav-links a:hover,
+.explore-nav-links a:hover,
+.planner-nav-links a:hover,
+.legal-nav-links a:hover,
+.trip-details-nav-links a:hover,
+.dashboard-nav-links button:hover,
+.nav-links a.active,
+.about-nav-links .active,
+.contact-nav-links .active,
+.explore-nav-links .active,
+.planner-nav-links .active,
+.legal-nav-links .active,
+.trip-details-nav-links .active {
+    color: var(--site-accent);
+}
+
+.dashboard-nav-links button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.nav-actions,
+.admin-nav-actions,
+.legal-nav-actions,
+.trip-details-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.login-btn,
+.about-login,
+.contact-login,
+.explore-login,
+.planner-login,
+.legal-login,
+.logout-btn,
+.admin-logout,
+.trip-details-login {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 108px;
+    min-height: 40px;
+    padding: 10px 18px;
+    border: 1px solid var(--site-button-border);
+    border-radius: 12px;
+    background: var(--site-button-bg);
+    color: var(--site-text);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.login-btn:hover,
+.about-login:hover,
+.contact-login:hover,
+.explore-login:hover,
+.planner-login:hover,
+.legal-login:hover,
+.logout-btn:hover,
+.admin-logout:hover,
+.trip-details-login:hover {
+    background: #e3e8ee;
+}
+
+.signup-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 21px;
+    border-radius: 8px;
+    background: var(--site-accent);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signup-btn:hover {
+    background: #0967e8;
+}
+
+.admin-brand {
+    font-size: 24px;
+}
+
+.admin-brand svg,
+.logo span {
+    line-height: 1;
+}
+
+@media (max-width: 900px) {
+    .nav-links,
+    .about-nav-links,
+    .contact-nav-links,
+    .explore-nav-links,
+    .planner-nav-links,
+    .legal-nav-links,
+    .trip-details-nav-links {
+        gap: 18px;
+    }
+}
+
+@media (max-width: 700px) {
+    .navbar,
+    .about-navbar,
+    .contact-navbar,
+    .dashboard-navbar,
+    .explore-navbar,
+    .planner-navbar,
+    .legal-navbar,
+    .trip-details-navbar,
+    .admin-navbar {
+        padding: 0 20px;
+        gap: 12px;
+    }
+
+    .nav-links,
+    .about-nav-links,
+    .contact-nav-links,
+    .explore-nav-links,
+    .planner-nav-links,
+    .legal-nav-links,
+    .trip-details-nav-links {
+        display: none;
+    }
+
+    .nav-actions,
+    .admin-nav-actions {
+        gap: 10px;
+    }
+}

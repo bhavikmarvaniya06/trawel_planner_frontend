@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-label="Scenic mountain landscape">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9bc9c6"/>
+      <stop offset="1" stop-color="#f0d9aa"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4f9291"/>
+      <stop offset="1" stop-color="#244f55"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="600" fill="url(#sky)"/>
+  <circle cx="720" cy="150" r="64" fill="#f5d69a"/>
+  <path d="M0 390 190 175l138 150 160-205 224 270 118-128 130 140v198H0Z" fill="#54766e"/>
+  <path d="m190 175 64 70-53-18-35 30Zm298-55 87 105-81-30-54 27Z" fill="#f4eee0" opacity=".9"/>
+  <path d="M0 405q180-45 360 0t360 0 240 0v195H0Z" fill="url(#water)"/>
+  <path d="M0 462q180-38 360 0t360 0 240 0" fill="none" stroke="#b7d7c8" stroke-width="8" opacity=".55"/>
+</svg>

@@ -1,0 +1,735 @@
+:root {
+    --site-navbar-height: 76px;
+    --site-nav-padding: 7%;
+    --site-bg: #ffffff;
+    --site-bg-soft: #edf4f1;
+    --site-border: rgba(28, 68, 59, 0.14);
+    --site-text: #17312c;
+    --site-muted: #5d716b;
+    --site-accent: #147466;
+    --site-accent-strong: #0c594f;
+    --site-accent-soft: rgba(20, 116, 102, 0.12);
+    --site-button-bg: #edf4f1;
+    --site-button-border: rgba(28, 68, 59, 0.2);
+    --site-shadow: 0 20px 50px rgba(17, 48, 42, 0.12);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", "Inter", Arial, sans-serif;
+    background: #f4f7f5;
+    color: var(--site-text);
+    line-height: 1.5;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+::selection {
+    background: rgba(20, 116, 102, 0.18);
+}
+
+.navbar,
+.about-navbar,
+.contact-navbar,
+.dashboard-navbar,
+.explore-navbar,
+.planner-navbar,
+.legal-navbar,
+.trip-details-navbar,
+.admin-navbar {
+    height: var(--site-navbar-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 0 var(--site-nav-padding);
+    background: var(--site-bg);
+    border-bottom: 1px solid var(--site-border);
+    position: relative;
+    z-index: 10;
+}
+
+.logo,
+.about-logo,
+.contact-logo,
+.dashboard-logo,
+.explore-logo,
+.planner-logo,
+.legal-logo,
+.trip-details-logo,
+.admin-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--site-text);
+    text-decoration: none;
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+}
+
+.nav-links,
+.about-nav-links,
+.contact-nav-links,
+.dashboard-nav-links,
+.explore-nav-links,
+.planner-nav-links,
+.legal-nav-links,
+.trip-details-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.nav-links a,
+.about-nav-links a,
+.contact-nav-links a,
+.explore-nav-links a,
+.planner-nav-links a,
+.legal-nav-links a,
+.trip-details-nav-links a,
+.dashboard-nav-links button {
+    color: var(--site-muted);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover,
+.about-nav-links a:hover,
+.contact-nav-links a:hover,
+.explore-nav-links a:hover,
+.planner-nav-links a:hover,
+.legal-nav-links a:hover,
+.trip-details-nav-links a:hover,
+.dashboard-nav-links button:hover,
+.nav-links a.active,
+.about-nav-links .active,
+.contact-nav-links .active,
+.explore-nav-links .active,
+.planner-nav-links .active,
+.legal-nav-links .active,
+.trip-details-nav-links .active {
+    color: var(--site-accent);
+}
+
+.dashboard-nav-links button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.nav-actions,
+.admin-nav-actions,
+.legal-nav-actions,
+.trip-details-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.login-btn,
+.about-login,
+.contact-login,
+.explore-login,
+.planner-login,
+.legal-login,
+.logout-btn,
+.admin-logout,
+.trip-details-login {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 108px;
+    min-height: 40px;
+    padding: 10px 18px;
+    border: 1px solid var(--site-button-border);
+    border-radius: 12px;
+    background: var(--site-button-bg);
+    color: var(--site-text);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.login-btn:hover,
+.about-login:hover,
+.contact-login:hover,
+.explore-login:hover,
+.planner-login:hover,
+.legal-login:hover,
+.logout-btn:hover,
+.admin-logout:hover,
+.trip-details-login:hover {
+    background: #e3e8ee;
+}
+
+.signup-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 21px;
+    border-radius: 8px;
+    background: var(--site-accent);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signup-btn:hover {
+    background: var(--site-accent-strong);
+}
+
+.admin-brand {
+    font-size: 24px;
+}
+
+.admin-brand svg,
+.logo span {
+    line-height: 1;
+}
+
+@media (max-width: 900px) {
+    .nav-links,
+    .about-nav-links,
+    .contact-nav-links,
+    .explore-nav-links,
+    .planner-nav-links,
+    .legal-nav-links,
+    .trip-details-nav-links {
+        gap: 18px;
+    }
+}
+
+@media (max-width: 700px) {
+    .navbar,
+    .about-navbar,
+    .contact-navbar,
+    .dashboard-navbar,
+    .explore-navbar,
+    .planner-navbar,
+    .legal-navbar,
+    .trip-details-navbar,
+    .admin-navbar {
+        padding: 0 20px;
+        gap: 12px;
+    }
+
+    .nav-links,
+    .about-nav-links,
+    .contact-nav-links,
+    .explore-nav-links,
+    .planner-nav-links,
+    .legal-nav-links,
+    .trip-details-nav-links {
+        display: none;
+    }
+
+    .nav-actions,
+    .admin-nav-actions {
+        gap: 10px;
+    }
+}
+
+.home .navbar,
+.about-page .about-navbar,
+.contact-page .contact-navbar,
+.dashboard-page .dashboard-navbar,
+.explore-page .explore-navbar,
+.planner-page .planner-navbar,
+.legal-page .legal-navbar,
+.trip-details-page .trip-details-navbar,
+.admin-page .admin-topbar {
+    height: var(--site-navbar-height);
+    min-height: var(--site-navbar-height);
+    align-items: center;
+    padding: 0 var(--site-nav-padding);
+    justify-content: space-between;
+    gap: 24px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--site-border);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+}
+
+.home .logo,
+.about-page .about-logo,
+.contact-page .contact-logo,
+.dashboard-page .dashboard-logo,
+.explore-page .explore-logo,
+.planner-page .planner-logo,
+.legal-page .legal-logo,
+.trip-details-page .trip-details-logo,
+.admin-page .admin-brand {
+    flex: 0 0 auto;
+    color: var(--site-text);
+    font-size: 27px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+}
+
+.home .logo span,
+.about-page .about-logo span,
+.contact-page .contact-logo span,
+.dashboard-page .dashboard-logo span,
+.explore-page .explore-logo span,
+.planner-page .planner-logo span,
+.legal-page .legal-logo span,
+.trip-details-page .trip-details-logo span,
+.admin-page .admin-brand span {
+    color: var(--site-accent);
+}
+
+.home .nav-links,
+.about-page .about-nav-links,
+.contact-page .contact-nav-links,
+.dashboard-page .dashboard-nav-links,
+.explore-page .explore-nav-links,
+.planner-page .planner-nav-links,
+.legal-page .legal-nav-links,
+.trip-details-page .trip-details-nav-links {
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.home .nav-links a,
+.about-page .about-nav-links a,
+.contact-page .contact-nav-links a,
+.dashboard-page .dashboard-nav-links button,
+.explore-page .explore-nav-links a,
+.planner-page .planner-nav-links a,
+.legal-page .legal-nav-links a,
+.trip-details-page .trip-details-nav-links button {
+    position: relative;
+    padding: 0;
+    color: var(--site-muted);
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+.dashboard-page .dashboard-nav-links button,
+.trip-details-page .trip-details-nav-links button {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.home .nav-links a::after,
+.about-page .about-nav-links a::after,
+.contact-page .contact-nav-links a::after,
+.dashboard-page .dashboard-nav-links button::after,
+.explore-page .explore-nav-links a::after,
+.planner-page .planner-nav-links a::after,
+.legal-page .legal-nav-links a::after,
+.trip-details-page .trip-details-nav-links button::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -9px;
+    left: 0;
+    height: 2px;
+    background: var(--site-accent);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.2s ease;
+}
+
+.home .nav-links a:hover,
+.home .nav-links a.active,
+.about-page .about-nav-links a:hover,
+.about-page .about-nav-links .active,
+.contact-page .contact-nav-links a:hover,
+.contact-page .contact-nav-links .active,
+.dashboard-page .dashboard-nav-links button:hover,
+.explore-page .explore-nav-links a:hover,
+.explore-page .explore-nav-links .active,
+.planner-page .planner-nav-links a:hover,
+.planner-page .planner-nav-links .active,
+.legal-page .legal-nav-links a:hover,
+.trip-details-page .trip-details-nav-links button:hover {
+    color: var(--site-accent);
+}
+
+.home .nav-links a:hover::after,
+.home .nav-links a.active::after,
+.about-page .about-nav-links a:hover::after,
+.about-page .about-nav-links .active::after,
+.contact-page .contact-nav-links a:hover::after,
+.contact-page .contact-nav-links .active::after,
+.dashboard-page .dashboard-nav-links button:hover::after,
+.explore-page .explore-nav-links a:hover::after,
+.explore-page .explore-nav-links .active::after,
+.planner-page .planner-nav-links a:hover::after,
+.planner-page .planner-nav-links .active::after,
+.legal-page .legal-nav-links a:hover::after,
+.trip-details-page .trip-details-nav-links button:hover::after {
+    transform: scaleX(1);
+}
+
+.home .nav-actions,
+.about-page .nav-actions,
+.contact-page .nav-actions,
+.explore-page .nav-actions,
+.planner-page .nav-actions,
+.legal-page .nav-actions,
+.trip-details-page .nav-actions {
+    flex: 0 0 auto;
+    gap: 12px;
+    margin-left: 0;
+}
+
+.home .login-btn,
+.about-page .about-login,
+.contact-page .contact-login,
+.dashboard-page .logout-btn,
+.explore-page .explore-login,
+.planner-page .planner-login,
+.legal-page .legal-login,
+.trip-details-page .trip-details-login,
+.admin-page .admin-logout {
+    min-width: 108px;
+    min-height: 42px;
+    align-self: center;
+    flex: 0 0 auto;
+    padding: 10px 18px;
+    border: 1px solid var(--site-button-border);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--site-text);
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(17, 48, 42, 0.06);
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home .login-btn:hover,
+.about-page .about-login:hover,
+.contact-page .contact-login:hover,
+.dashboard-page .logout-btn:hover,
+.explore-page .explore-login:hover,
+.planner-page .planner-login:hover,
+.legal-page .legal-login:hover,
+.trip-details-page .trip-details-login:hover,
+.admin-page .admin-logout:hover {
+    transform: translateY(-1px);
+    background: #eaf3ef;
+    box-shadow: 0 10px 22px rgba(17, 48, 42, 0.12);
+}
+
+.home .navbar .signup-btn,
+.about-page .about-navbar .signup-btn,
+.contact-page .contact-navbar .signup-btn,
+.explore-page .explore-navbar .signup-btn,
+.planner-page .planner-navbar .signup-btn,
+.legal-page .legal-navbar .signup-btn,
+.trip-details-page .trip-details-navbar .signup-btn {
+    min-height: 42px;
+    padding: 10px 21px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--site-accent), var(--site-accent-strong));
+    box-shadow: 0 8px 18px rgba(17, 80, 68, 0.18);
+}
+
+.home .navbar .signup-btn:hover,
+.about-page .about-navbar .signup-btn:hover,
+.contact-page .contact-navbar .signup-btn:hover,
+.explore-page .explore-navbar .signup-btn:hover,
+.planner-page .planner-navbar .signup-btn:hover,
+.legal-page .legal-navbar .signup-btn:hover,
+.trip-details-page .trip-details-navbar .signup-btn:hover {
+    transform: translateY(-1px);
+    background: var(--site-accent-strong);
+    box-shadow: 0 12px 24px rgba(17, 80, 68, 0.22);
+}
+
+.admin-page .admin-nav-label {
+    flex: 1;
+    color: var(--site-muted);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+@media (max-width: 960px) {
+    .home .nav-links,
+    .about-page .about-nav-links,
+    .contact-page .contact-nav-links,
+    .dashboard-page .dashboard-nav-links,
+    .explore-page .explore-nav-links,
+    .planner-page .planner-nav-links,
+    .legal-page .legal-nav-links,
+    .trip-details-page .trip-details-nav-links {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .home .navbar,
+    .about-page .about-navbar,
+    .contact-page .contact-navbar,
+    .dashboard-page .dashboard-navbar,
+    .explore-page .explore-navbar,
+    .planner-page .planner-navbar,
+    .legal-page .legal-navbar,
+    .trip-details-page .trip-details-navbar,
+    .admin-page .admin-topbar {
+        padding: 0 20px;
+    }
+
+    .home .logo,
+    .about-page .about-logo,
+    .contact-page .contact-logo,
+    .dashboard-page .dashboard-logo,
+    .explore-page .explore-logo,
+    .planner-page .planner-logo,
+    .legal-page .legal-logo,
+    .trip-details-page .trip-details-logo,
+    .admin-page .admin-brand {
+        font-size: 23px;
+    }
+
+    .home .login-btn,
+    .about-page .about-login,
+    .contact-page .contact-login,
+    .dashboard-page .logout-btn,
+    .explore-page .explore-login,
+    .planner-page .planner-login,
+    .legal-page .legal-login,
+    .trip-details-page .trip-details-login,
+    .admin-page .admin-logout {
+        min-width: 96px;
+        padding-right: 13px;
+        padding-left: 13px;
+    }
+
+    .home .login-btn {
+        display: inline-flex;
+    }
+}
+
+@media (max-width: 550px) {
+    .admin-page .admin-nav-label {
+        display: none;
+    }
+}
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    width: 100%;
+    height: var(--site-navbar-height);
+}
+
+.site-navbar {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr);
+    align-items: center;
+    width: 100%;
+    height: var(--site-navbar-height);
+    padding: 0 var(--site-nav-padding);
+    gap: 24px;
+    background: rgba(255, 255, 255, 0.88);
+    border-bottom: 1px solid var(--site-border);
+    backdrop-filter: blur(14px);
+}
+
+.site-brand {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+    gap: 8px;
+    color: var(--site-text);
+    font-size: 27px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+}
+
+.site-brand-mark {
+    color: var(--site-accent);
+}
+
+.site-nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    height: 100%;
+    white-space: nowrap;
+}
+
+.site-nav-links a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    color: var(--site-muted);
+    font-size: 15px;
+    font-weight: 600;
+    transition: color 0.18s ease;
+}
+
+.site-nav-links a::after {
+    position: absolute;
+    right: 0;
+    bottom: 18px;
+    left: 0;
+    height: 2px;
+    background: var(--site-accent);
+    content: "";
+    transform: scaleX(0);
+    transition: transform 0.18s ease;
+}
+
+.site-nav-links a:hover,
+.site-nav-links a.active {
+    color: var(--site-accent);
+}
+
+.site-nav-links a:hover::after,
+.site-nav-links a.active::after {
+    transform: scaleX(1);
+}
+
+.site-nav-actions {
+    display: flex;
+    align-items: center;
+    justify-self: end;
+    gap: 12px;
+    min-height: 42px;
+}
+
+.site-nav-actions button,
+.site-login-btn,
+.site-signup-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-width: 108px;
+    height: 42px;
+    padding: 0 18px;
+    border: 1px solid var(--site-button-border);
+    border-radius: 12px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.site-nav-actions button,
+.site-login-btn {
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--site-text);
+    box-shadow: 0 4px 12px rgba(17, 48, 42, 0.06);
+}
+
+.site-signup-btn {
+    border-color: transparent;
+    background: linear-gradient(135deg, var(--site-accent), var(--site-accent-strong));
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(17, 80, 68, 0.18);
+}
+
+.site-nav-actions button:hover,
+.site-login-btn:hover {
+    border-color: #bfd4cc;
+    background: #eaf3ef;
+    box-shadow: 0 8px 18px rgba(17, 48, 42, 0.1);
+}
+
+.site-signup-btn:hover {
+    background: var(--site-accent-strong);
+    box-shadow: 0 10px 20px rgba(17, 80, 68, 0.22);
+}
+
+@media (max-width: 1050px) {
+    .site-navbar {
+        grid-template-columns: 1fr auto;
+    }
+
+    .site-nav-links {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .site-navbar {
+        padding: 0 20px;
+        gap: 12px;
+    }
+
+    .site-brand {
+        font-size: 23px;
+    }
+
+    .site-nav-actions {
+        gap: 8px;
+    }
+
+    .site-nav-actions button,
+    .site-login-btn,
+    .site-signup-btn {
+        min-width: 94px;
+        padding: 0 12px;
+    }
+}
+
+@media (max-width: 390px) {
+    .site-navbar {
+        padding: 0 14px;
+        gap: 8px;
+    }
+
+    .site-brand {
+        font-size: 21px;
+    }
+
+    .site-nav-actions button,
+    .site-login-btn,
+    .site-signup-btn {
+        min-width: 84px;
+        padding: 0 9px;
+        font-size: 13px;
+    }
+}

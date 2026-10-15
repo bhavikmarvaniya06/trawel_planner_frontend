@@ -1,0 +1,514 @@
+.planner-page {
+    min-height: 100vh;
+    background: #f7f9fc;
+    color: #172033;
+}
+
+
+/* NAVBAR */
+
+.planner-navbar {
+    position: relative;
+    height: 76px;
+    padding: 0 7%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    border-bottom: 1px solid #eaecf0;
+}
+
+.planner-logo {
+    text-decoration: none;
+
+    color: #172033;
+
+    font-size: 25px;
+
+    font-weight: 800;
+}
+
+.planner-nav-links {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    gap: 32px;
+}
+
+.planner-nav-links a {
+    text-decoration: none;
+
+    color: #667085;
+
+    font-size: 15px;
+}
+
+.planner-nav-links a:hover,
+.planner-nav-links .active {
+    color: #1677ff;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.planner-login {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 108px;
+    min-height: 40px;
+
+    padding: 10px 18px;
+
+    border: 1px solid #d6dbe3;
+    border-radius: 12px;
+
+    background: #eef2f5;
+    color: #172033;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+
+    transition: all 0.2s ease;
+}
+
+.planner-login:hover {
+    background: #e3e8ee;
+}
+
+
+/* HEADER */
+
+.planner-header {
+    text-align: center;
+
+    padding: 65px 20px 40px;
+
+    background: white;
+}
+
+.planner-ai-badge {
+    display: inline-flex;
+
+    align-items: center;
+    gap: 7px;
+
+    color: #1677ff;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.8px;
+}
+
+.planner-header h1 {
+    font-size: 46px;
+
+    margin: 15px 0 10px;
+
+    letter-spacing: -1px;
+}
+
+.planner-header p {
+    max-width: 650px;
+
+    margin: auto;
+
+    color: #667085;
+
+    font-size: 17px;
+
+    line-height: 1.6;
+}
+
+
+/* MAIN */
+
+.planner-container {
+    max-width: 1100px;
+
+    margin: 45px auto;
+
+    padding: 0 20px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 330px;
+
+    gap: 30px;
+
+    align-items: start;
+}
+
+
+/* FORM */
+
+.planner-form {
+    background: white;
+
+    border: 1px solid #eaecf0;
+
+    border-radius: 16px;
+
+    padding: 35px;
+}
+
+.form-section {
+    padding-bottom: 32px;
+
+    margin-bottom: 32px;
+
+    border-bottom: 1px solid #eaecf0;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+
+    margin-bottom: 0;
+}
+
+.form-section h2 {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin: 0 0 20px;
+
+    font-size: 19px;
+}
+
+.form-section h2 svg {
+    color: #1677ff;
+}
+
+.form-section label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #344054;
+}
+
+.form-section input,
+.form-section select {
+    width: 100%;
+
+    padding: 14px 15px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 15px;
+
+    color: #172033;
+
+    background: white;
+}
+
+.form-section input:focus,
+.form-section select:focus {
+    border-color: #1677ff;
+
+    box-shadow: 0 0 0 3px rgba(22,119,255,0.1);
+}
+
+
+/* DATES */
+
+.date-grid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 15px;
+}
+
+
+/* BUDGET */
+
+.budget-input {
+    display: flex;
+
+    align-items: center;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 8px;
+
+    overflow: hidden;
+}
+
+.budget-input span {
+    padding-left: 15px;
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    color: #667085;
+}
+
+.budget-input input {
+    border: none;
+
+    box-shadow: none;
+}
+
+.budget-input input:focus {
+    box-shadow: none;
+}
+
+.form-hint {
+    color: #98a2b3;
+
+    font-size: 13px;
+
+    margin: 8px 0 0;
+}
+
+
+/* INTERESTS */
+
+.interest-grid {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+}
+
+.interest-btn {
+    padding: 11px 15px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: #475467;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition: 0.2s;
+}
+
+.interest-btn:hover {
+    border-color: #1677ff;
+
+    color: #1677ff;
+}
+
+.interest-btn.selected {
+    background: #edf6ff;
+
+    border-color: #1677ff;
+
+    color: #1677ff;
+}
+
+
+/* GENERATE BUTTON */
+
+.generate-btn {
+    width: 100%;
+
+    margin-top: 5px;
+
+    padding: 16px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #1677ff;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 9px;
+
+    transition: 0.2s;
+}
+
+.generate-btn:hover {
+    background: #0967e8;
+}
+
+
+/* SIDE CARD */
+
+.planner-side-card {
+    background: #edf6ff;
+
+    border-radius: 16px;
+
+    padding: 30px;
+
+    position: sticky;
+
+    top: 25px;
+}
+
+.side-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #1677ff;
+
+    color: white;
+
+    margin-bottom: 20px;
+}
+
+.planner-side-card h3 {
+    font-size: 21px;
+
+    margin: 0 0 12px;
+}
+
+.planner-side-card > p {
+    color: #667085;
+
+    line-height: 1.6;
+
+    font-size: 14px;
+}
+
+.side-feature {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 18px;
+
+    color: #344054;
+
+    font-size: 14px;
+}
+
+.side-feature span {
+    color: #1677ff;
+
+    font-weight: 700;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 850px) {
+
+    .planner-container {
+        grid-template-columns: 1fr;
+    }
+
+    .planner-side-card {
+        position: static;
+    }
+
+    .planner-nav-links {
+        display: none;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .planner-header h1 {
+        font-size: 35px;
+    }
+
+    .planner-header p {
+        font-size: 15px;
+    }
+
+    .planner-form {
+        padding: 22px;
+    }
+
+    .date-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+.error-message {
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+
+    border-radius: 8px;
+
+    background: #fee4e2;
+    color: #b42318;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+.success-message {
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+
+    border-radius: 8px;
+
+    background: #ecfdf3;
+    color: #027a48;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+.generate-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

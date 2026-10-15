@@ -1,0 +1,104 @@
+@import "./Register.css";
+
+.auth-page {
+    min-height: 100svh;
+    padding: 20px;
+    background-color: #143a36;
+}
+
+.auth-card {
+    max-width: 420px;
+    padding: 28px 32px;
+}
+
+.auth-logo {
+    margin-bottom: 14px;
+}
+
+.auth-icon {
+    width: 46px;
+    height: 46px;
+    margin-bottom: 12px;
+}
+
+.auth-card h1 {
+    font-size: 26px;
+}
+
+.auth-subtitle {
+    margin: 0 0 20px;
+}
+
+.input-group {
+    margin-bottom: 14px;
+}
+
+.input-group label {
+    margin-bottom: 5px;
+}
+
+.input-wrapper input {
+    padding: 10px 0;
+}
+
+.auth-button {
+    padding: 12px;
+}
+
+.auth-footer {
+    margin-top: 16px;
+}
+
+.auth-success {
+    padding: 11px 13px;
+    margin-bottom: 20px;
+    border-radius: 7px;
+    background: #e7f9ee;
+    color: #067647;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.auth-footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.auth-footer.alt-link {
+    margin: 0;
+}
+
+.secondary-link-btn {
+    width: auto;
+    padding: 10px 12px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.secondary-link-btn:hover {
+    background: #eef4ff;
+}
+
+@media (max-width: 500px) {
+    .auth-card {
+        padding: 24px 20px;
+    }
+
+    .auth-footer-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .secondary-link-btn {
+        width: 100%;
+    }
+}
