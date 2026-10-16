@@ -61,7 +61,7 @@ function Terms() {
                         </p>
                     </article>
 
-                    <Link to="/" className="legal-back-link">
+                    <Link to="/home" className="legal-back-link">
                         <ArrowLeft size={17} />
                         Back to TripAI
                     </Link>

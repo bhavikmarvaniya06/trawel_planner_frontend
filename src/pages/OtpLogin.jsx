@@ -144,7 +144,7 @@ function OtpLogin() {
 
                 <div className="auth-footer-row">
                     <p className="auth-footer alt-link">
-                        <Link to="/">Go to Home</Link>
+                        <Link to="/home">Go to Home</Link>
                     </p>
 
                     <p className="auth-footer alt-link">

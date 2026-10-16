@@ -34,7 +34,7 @@ function Login() {
             const returnTo = location.state?.from;
             const destination = returnTo
                 ? `${returnTo.pathname}${returnTo.search}${returnTo.hash}`
-                : "/dashboard";
+                : "/planner";
             navigate(response.user.role === "admin" ? "/admin" : destination, { replace: true });
 
         } catch (error) {
@@ -161,7 +161,7 @@ function Login() {
 
                 <div className="auth-footer-row">
                     <p className="auth-footer alt-link">
-                        <Link to="/">Go to Home</Link>
+                        <Link to="/home">Go to Home</Link>
                     </p>
 
                     <button

@@ -41,7 +41,7 @@ function Home() {
                 </div>
 
                 <div className="nav-links">
-                    <Link to="/">Home</Link>
+                    <Link to="/home">Home</Link>
                     <Link to="/explore">Explore</Link>
                     <Link to="/about">About</Link>
                     <Link to="/planner">AI Planner</Link>
@@ -143,7 +143,7 @@ function Home() {
                         )}
                     </form>
 
-                    <button className="ai-planner-btn" type="button">
+                    <button className="ai-planner-btn" type="button" onClick={() => navigate("/planner")}>
                         <Sparkles size={19} />
                         Plan my trip with AI
                         <ArrowRight size={19} />

@@ -19,9 +19,17 @@ jest.mock('./context/AuthContext', () => ({
   }),
 }));
 
-test('shows the public home page to signed-out visitors', async () => {
+test('opens the login page at the root URL', async () => {
   window.history.replaceState({}, '', '/');
   render(<App />);
+
+  expect(await screen.findByRole('heading', { name: /welcome back/i })).toBeInTheDocument();
+});
+
+test('shows the public home page at /home', async () => {
+  window.history.replaceState({}, '', '/home');
+  render(<App />);
+
   expect(await screen.findByRole('heading', { name: /discover the world/i }, { timeout: 5000 })).toBeInTheDocument();
 
   const destinationImages = screen.getAllByRole('img');
@@ -44,7 +52,7 @@ test('Explore shows every destination and image fallback', async () => {
 });
 
 test('shows destination suggestions while typing on the home page', async () => {
-  window.history.replaceState({}, '', '/');
+  window.history.replaceState({}, '', '/home');
   render(<App />);
 
   const input = await screen.findByLabelText(/where do you want to go/i);
@@ -55,7 +63,7 @@ test('shows destination suggestions while typing on the home page', async () => 
 
 test('passes the searched destination into the planner form', async () => {
   mockUser = { role: 'traveler' };
-  window.history.replaceState({}, '', '/');
+  window.history.replaceState({}, '', '/home');
   render(<App />);
 
   fireEvent.change(await screen.findByLabelText(/search destinations/i), {
@@ -73,7 +81,7 @@ test('returns a signed-out search to the planner after login', async () => {
     mockUser = { role: 'traveler' };
     return { user: mockUser };
   });
-  window.history.replaceState({}, '', '/');
+  window.history.replaceState({}, '', '/home');
   render(<App />);
 
   fireEvent.change(await screen.findByLabelText(/search destinations/i), {
@@ -91,4 +99,27 @@ test('returns a signed-out search to the planner after login', async () => {
   fireEvent.click(screen.getByRole('button', { name: /^login$/i }));
 
   expect(await screen.findByLabelText(/destination \(optional for ai ideas\)/i)).toHaveValue('Bali');
+});
+
+test('sends the AI planner button through login to the planner', async () => {
+  mockUser = null;
+  mockLogin.mockImplementation(async () => {
+    mockUser = { role: 'traveler' };
+    return { user: mockUser };
+  });
+  window.history.replaceState({}, '', '/home');
+  render(<App />);
+
+  fireEvent.click(await screen.findByRole('button', { name: /plan my trip with ai/i }));
+  expect(await screen.findByRole('heading', { name: /welcome back/i })).toBeInTheDocument();
+  fireEvent.change(screen.getByPlaceholderText(/enter your email/i), {
+    target: { value: 'traveler@example.com' },
+  });
+  fireEvent.change(screen.getByPlaceholderText(/enter your password/i), {
+    target: { value: 'password' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: /^login$/i }));
+
+  expect(await screen.findByLabelText(/destination \(optional for ai ideas\)/i)).toBeInTheDocument();
+  mockUser = null;
 });

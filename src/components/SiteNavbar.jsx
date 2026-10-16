@@ -2,7 +2,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const navigationLinks = [
-    { label: "Home", path: "/", end: true },
+    { label: "Home", path: "/home", end: true },
     { label: "Explore", path: "/explore" },
     { label: "About", path: "/about" },
     { label: "AI Planner", path: "/planner" },
@@ -21,7 +21,7 @@ function SiteNavbar() {
     return (
         <header className="site-header">
             <nav className="site-navbar" aria-label="Main navigation">
-                <Link to="/" className="site-brand">
+                <Link to="/home" className="site-brand">
                     <span className="site-brand-mark">✈</span> TripAI
                 </Link>
 
