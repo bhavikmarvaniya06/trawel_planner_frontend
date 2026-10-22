@@ -88,6 +88,10 @@ function Planner() {
             name: "History",
             icon: <Landmark size={18} />,
         },
+        {
+            name: "Luxury events",
+            icon: <CalendarDays size={18} />,
+        },
     ];
 
 
@@ -686,6 +690,12 @@ function Planner() {
 
 
                         </div>
+
+                        {interests.includes("Luxury events") && (
+                            <p className="form-hint">
+                                Gemini can suggest premium experiences such as private cruises, fine dining, spa visits, and cultural performances. Confirm current event dates, availability, and ticket prices before booking.
+                            </p>
+                        )}
 
                     </div>
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { LogOut, Map as MapIcon, MessageSquareText, Search, Users } from "lucide-react";
+import { AlertCircle, CalendarCheck2, LogOut, Map as MapIcon, MessageSquareText, Search, Sparkles, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import api from "../services/api";
@@ -22,6 +22,19 @@ const labels = Object.fromEntries(views);
 const singularLabels = { users: "user", trips: "trip", queries: "customer query", feedback: "feedback", destinations: "destination", itineraries: "itinerary item", expenses: "expense" };
 
 const dateValue = (value, withTime = false) => value ? new Date(value).toLocaleString(undefined, withTime ? { dateStyle: "medium", timeStyle: "short" } : { dateStyle: "medium" }) : "—";
+const dailyTasksErrorMessage = (requestError) => {
+    const status = requestError.response?.status;
+    const serverMessage = requestError.response?.data?.message;
+
+    if (status === 404 || status === 405) {
+        return "The daily-tasks API is missing from the deployed backend. Deploy the latest backend, then retry.";
+    }
+    if (serverMessage) return serverMessage;
+    if (!requestError.response) {
+        return "Cannot reach the backend. Check that it is running and that the frontend API URL is correct.";
+    }
+    return `The backend could not generate AI daily tasks (HTTP ${status || "error"}). Check backend logs and Gemini configuration, then retry.`;
+};
 const moneyValue = (amount, currency = "USD") => {
     try {
         return new Intl.NumberFormat(undefined, { style: "currency", currency: currency || "USD", maximumFractionDigits: 2 }).format(Number(amount) || 0);
@@ -42,6 +55,9 @@ function AdminCollectionsDashboard() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
+    const [dailyPlan, setDailyPlan] = useState(null);
+    const [dailyTasksLoading, setDailyTasksLoading] = useState(true);
+    const [dailyTasksError, setDailyTasksError] = useState("");
     const [dialog, setDialog] = useState(null);
     const [form, setForm] = useState({});
 
@@ -68,6 +84,27 @@ function AdminCollectionsDashboard() {
     }, [navigate]);
 
     useEffect(() => { loadDashboard(); }, [loadDashboard]);
+
+    const loadDailyTasks = useCallback(async () => {
+        setDailyTasksLoading(true);
+        setDailyTasksError("");
+        try {
+            const response = await api.post("/admin/daily-tasks", {});
+            setDailyPlan({ date: response.data.date, tasks: response.data.tasks || [] });
+        } catch (requestError) {
+            if ([401, 403].includes(requestError.response?.status)) {
+                navigate("/");
+                return;
+            }
+            setDailyTasksError(
+                dailyTasksErrorMessage(requestError)
+            );
+        } finally {
+            setDailyTasksLoading(false);
+        }
+    }, [navigate]);
+
+    useEffect(() => { loadDailyTasks(); }, [loadDailyTasks]);
 
     const itinerarySummaries = useMemo(() => {
         const groups = new Map();
@@ -262,6 +299,43 @@ function AdminCollectionsDashboard() {
                         <div><Users size={20} /><strong>{stats.totalUsers}</strong><span>Total users</span></div>
                         <div><MapIcon size={20} /><strong>{stats.tripCount}</strong><span>Total trips</span></div>
                         <div><MessageSquareText size={20} /><strong>{Number(stats.averageRating).toFixed(1)} / 5</strong><span>Average rating</span></div>
+                    </section>
+                    <section className="admin-daily-plan" aria-labelledby="admin-daily-plan-title">
+                        <div className="admin-daily-plan-heading">
+                            <div className="admin-daily-plan-title">
+                                <span className="admin-daily-plan-icon"><Sparkles size={18} /></span>
+                                <div>
+                                    <h2 id="admin-daily-plan-title">AI daily tasks</h2>
+                                    <p>{dailyPlan?.date ? `Generated for ${dateValue(dailyPlan.date)}` : "Today's operations recommendations"}</p>
+                                </div>
+                            </div>
+                            <span className="admin-ai-label">Gemini AI</span>
+                        </div>
+                        {dailyTasksLoading && <p className="admin-daily-plan-message" role="status">Generating your daily admin tasks...</p>}
+                        {!dailyTasksLoading && dailyTasksError && (
+                            <div className="admin-daily-plan-error" role="alert">
+                                <AlertCircle size={18} />
+                                <span>{dailyTasksError}</span>
+                                <button type="button" onClick={loadDailyTasks}>Try again</button>
+                            </div>
+                        )}
+                        {!dailyTasksLoading && dailyPlan?.tasks?.length > 0 && (
+                            <ol className="admin-daily-task-list">
+                                {dailyPlan.tasks.map((task, index) => (
+                                    <li key={`${dailyPlan.date}-${index}`}>
+                                        <CalendarCheck2 size={18} />
+                                        <div>
+                                            <div className="admin-daily-task-title">
+                                                <strong>{task.title}</strong>
+                                                <span className={`admin-task-priority ${task.priority}`}>{task.priority}</span>
+                                            </div>
+                                            <p>{task.details}</p>
+                                            <span className="admin-task-category">{task.category}</span>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ol>
+                        )}
                     </section>
                     <section className="admin-section">
                         <nav className="admin-collection-tabs" aria-label="Collections">
