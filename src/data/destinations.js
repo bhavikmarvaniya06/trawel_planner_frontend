@@ -1,7 +1,7 @@
 const imageUrl = (photoId) =>
     `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=720&q=72`;
 
-export const destinationFallbackImage = "/destination-fallback.svg";
+const destinationFallbackImage = "/destination-fallback.svg";
 
 const destinations = [
     {
@@ -279,4 +279,4 @@ const destinations = [
     },
 ];
 
-export default destinations;
+module.exports = { destinations, destinationFallbackImage };

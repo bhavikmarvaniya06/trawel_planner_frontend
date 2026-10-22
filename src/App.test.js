@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import App from './App';
 import api from './services/api';
+import destinationCatalog from './data/destinations';
 
 let mockUser = null;
 let mockLogin = jest.fn(async () => {
@@ -38,7 +39,7 @@ test('shows the public home page at /home', async () => {
 
   expect(await screen.findByRole('heading', { name: /discover the world/i }, { timeout: 5000 })).toBeInTheDocument();
 
-  const destinationImages = screen.getAllByRole('img');
+  const destinationImages = await screen.findAllByRole('img');
   expect(destinationImages).toHaveLength(9);
   fireEvent.error(destinationImages[0]);
   expect(destinationImages[0]).toHaveAttribute('src', '/destination-fallback.svg');
@@ -46,13 +47,20 @@ test('shows the public home page at /home', async () => {
 });
 
 test('Explore shows every destination and image fallback', async () => {
-  api.get.mockResolvedValue({ data: { destinations: [] } });
+  api.get.mockResolvedValue({
+    data: {
+      destinations: destinationCatalog.destinations.map((destination) => ({
+        ...destination,
+        imageUrl: destination.image,
+      })),
+    },
+  });
   window.history.replaceState({}, '', '/explore');
   render(<App />);
 
   expect(await screen.findByRole('heading', { name: /discover your next adventure/i }, { timeout: 5000 })).toBeInTheDocument();
 
-  const destinationImages = screen.getAllByRole('img');
+  const destinationImages = await screen.findAllByRole('img');
   expect(destinationImages).toHaveLength(44);
   fireEvent.error(destinationImages[0]);
   expect(destinationImages[0]).toHaveAttribute('src', '/destination-fallback.svg');

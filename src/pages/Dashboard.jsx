@@ -16,10 +16,11 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import SiteNavbar from "../components/SiteNavbar";
-import { destinationFallbackImage } from "../data/destinations";
+import destinationCatalog from "../data/destinations";
 
 import "./Dashboard.css";
 
+const { destinationFallbackImage } = destinationCatalog;
 
 function Dashboard() {
 

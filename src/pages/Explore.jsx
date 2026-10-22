@@ -8,9 +8,10 @@ import {
 
 import SiteNavbar from "../components/SiteNavbar";
 import api from "../services/api";
-import destinations, { destinationFallbackImage } from "../data/destinations";
+import destinationCatalog from "../data/destinations";
 import "./Explore.css";
 
+const { destinations: defaultDestinations, destinationFallbackImage } = destinationCatalog;
 
 function Explore() {
     const [adminDestinations, setAdminDestinations] = useState([]);
@@ -32,18 +33,10 @@ function Explore() {
         loadAdminDestinations();
     }, []);
 
-    const adminDestinationNames = new Set(
-        adminDestinations.map((destination) => destination.name.trim().toLowerCase())
-    );
-    const filteredDestinations = [
-        ...adminDestinations.map((destination) => ({
-            ...destination,
-            image: destination.imageUrl || destinationFallbackImage,
-        })),
-        ...destinations.filter(
-            (destination) => !adminDestinationNames.has(destination.name.trim().toLowerCase())
-        ),
-    ];
+    const filteredDestinations = (catalogError ? defaultDestinations : adminDestinations).map((destination) => ({
+        ...destination,
+        image: destination.imageUrl || destination.image || destinationFallbackImage,
+    }));
 
 
     return (

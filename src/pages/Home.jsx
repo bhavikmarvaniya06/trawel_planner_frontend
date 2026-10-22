@@ -1,15 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MapPin, Search, Sparkles, ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import destinations, { destinationFallbackImage } from "../data/destinations";
+import api from "../services/api";
+import destinationCatalog from "../data/destinations";
 import "./Home.css";
+
+const { destinations: defaultDestinations, destinationFallbackImage } = destinationCatalog;
 
 function Home() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const [location, setLocation] = useState("");
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const [destinations, setDestinations] = useState([]);
+
+    useEffect(() => {
+        const loadDestinations = async () => {
+            try {
+                const response = await api.get("/destinations");
+                setDestinations(response.data.destinations || []);
+            } catch (requestError) {
+                console.error("Failed to load destinations:", requestError);
+                setDestinations(defaultDestinations);
+            }
+        };
+
+        loadDestinations();
+    }, []);
 
     const matchingDestinations = location.trim()
         ? destinations.filter((destination) =>
@@ -165,7 +183,11 @@ function Home() {
 
                 <div className="destination-grid">
                     {destinations.slice(0, 9).map((destination) => (
-                        <Destination key={destination.name} {...destination} />
+                        <Destination
+                            key={destination._id || destination.name}
+                            {...destination}
+                            image={destination.imageUrl || destination.image}
+                        />
                     ))}
                 </div>
             </section>
