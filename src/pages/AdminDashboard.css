@@ -396,11 +396,6 @@
 .itinerary-destination.active { border-color: #176c66; background: #eaf6f4; color: #123b42; font-weight: 700; }
 .destination-itinerary-link { border: 0; background: none; color: #176c66; padding: 0; font: inherit; font-weight: 700; text-align: left; cursor: pointer; }
 .destination-itinerary-link:hover { text-decoration: underline; }
-.destination-table-thumbnail { display: block; width: 76px; height: 54px; object-fit: cover; border-radius: 6px; background: #eaf3ef; }
-.destination-description-tools { display: grid; gap: 8px; }
-.destination-ai-button { display: inline-flex; align-items: center; justify-self: start; gap: 7px; border: 1px solid #cbdedb; border-radius: 7px; background: #edf7f5; color: #176c66; padding: 8px 11px; font: inherit; font-size: .83rem; font-weight: 700; cursor: pointer; }
-.destination-ai-button:disabled { cursor: wait; opacity: .65; }
-.destination-image-preview { display: block; width: min(100%, 300px); max-height: 170px; object-fit: cover; border-radius: 9px; background: #eaf3ef; }
 .admin-table { min-width: 840px; }
 .admin-table th, .admin-table td { padding: 13px 16px; }
 .admin-table td { max-width: 320px; overflow-wrap: anywhere; }

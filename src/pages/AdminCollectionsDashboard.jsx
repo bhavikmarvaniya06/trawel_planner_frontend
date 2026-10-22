@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { LogOut, Map as MapIcon, MessageSquareText, Search, Sparkles, Users } from "lucide-react";
+import { LogOut, Map as MapIcon, MessageSquareText, Search, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import api from "../services/api";
@@ -9,11 +9,11 @@ import AdminRecordsTable from "../components/AdminRecordsTable";
 import "./AdminDashboard.css";
 
 const views = [
-    ["destinations", "Destinations"],
     ["trips", "Trips"],
     ["users", "Users"],
     ["queries", "Customer queries"],
     ["feedback", "Feedback"],
+    ["destinations", "Destinations"],
     ["itineraries", "Trip itinerary"],
 ];
 const endpoints = { users: "users", trips: "trips", queries: "queries", feedback: "feedback", destinations: "destinations", itineraries: "itineraries", expenses: "expenses" };
@@ -36,7 +36,7 @@ function AdminCollectionsDashboard() {
     const { logout } = useAuth();
     const [data, setData] = useState({ users: [], trips: [], queries: [], feedback: [], destinations: [], itineraries: [], expenses: [] });
     const [stats, setStats] = useState({ totalUsers: 0, tripCount: 0, averageRating: 0, budgetSummary: [] });
-    const [selectedView, setSelectedView] = useState("destinations");
+    const [selectedView, setSelectedView] = useState("trips");
     const [search, setSearch] = useState("");
     const [filters, setFilters] = useState({ status: "", rating: "", destination: "" });
     const [loading, setLoading] = useState(true);
@@ -44,7 +44,6 @@ function AdminCollectionsDashboard() {
     const [error, setError] = useState("");
     const [dialog, setDialog] = useState(null);
     const [form, setForm] = useState({});
-    const [generatingDescription, setGeneratingDescription] = useState(false);
 
     const loadDashboard = useCallback(async () => {
         try {
@@ -133,7 +132,7 @@ function AdminCollectionsDashboard() {
             users: [["name", "Name", (row) => row.name], ["email", "Email", (row) => row.email], ["role", "Role", (row) => row.role], ["joined", "Joined", (row) => dateValue(row.createdAt), (row) => new Date(row.createdAt).getTime()]],
             queries: [["name", "Name", (row) => row.name], ["email", "Email", (row) => row.email], ["query", "Query", (row) => row.query], ["status", "Status", (row) => row.status || "open"], ["received", "Received", (row) => dateValue(row.createdAt, true), (row) => new Date(row.createdAt).getTime()]],
             feedback: [["name", "Name", (row) => row.name], ["rating", "Rating", (row) => `${row.rating}/5`, (row) => Number(row.rating)], ["message", "Feedback", (row) => row.message], ["trip", "Trip", (row) => tripName(row.trip) || row.page || "General"], ["received", "Received", (row) => dateValue(row.createdAt, true), (row) => new Date(row.createdAt).getTime()]],
-            destinations: [["image", "Image", (row) => <img className="destination-table-thumbnail" src={row.imageUrl || "/destination-fallback.svg"} alt="" loading="lazy" onError={(event) => { event.currentTarget.src = "/destination-fallback.svg"; }} />, (row) => row.imageUrl || ""], ["name", "Location", (row) => row.name], ["country", "Country", (row) => row.country || "—"], ["region", "Region", (row) => row.region || "—"], ["description", "Description", (row) => row.description || "—"], ["active", "Status", (row) => row.active ? "Active" : "Inactive"]],
+            destinations: [["name", "Destination", (row) => <button type="button" className="destination-itinerary-link" onClick={() => { setSelectedView("itineraries"); setFilters((current) => ({ ...current, destination: row.name })); }}>{row.name}</button>], ["country", "Country", (row) => row.country || "—"], ["description", "Description", (row) => row.description || "—"], ["active", "Status", (row) => row.active ? "Active" : "Inactive"]],
             itineraries: filters.destination
                 ? [["day", "Day", (row) => row.day, (row) => Number(row.day)], ["date", "Date", (row) => dateValue(row.date), (row) => new Date(row.date).getTime()], ["title", "Plan", (row) => row.title], ["activities", "Activities", (row) => (row.activities || []).map((activity) => activity.title || activity.name || "Activity").join(", ") || "—"]]
                 : [["destination", "Destination", (row) => <button type="button" className="destination-itinerary-link" onClick={() => setFilters((current) => ({ ...current, destination: row.destination }))}>{row.destination}</button>], ["plannedDays", "Itinerary days", (row) => `${row.plannedDays} ${row.plannedDays === 1 ? "day" : "days"}`, (row) => row.plannedDays], ["tripCount", "Trips", (row) => row.tripCount, (row) => row.tripCount]],
@@ -160,7 +159,7 @@ function AdminCollectionsDashboard() {
             trips: { destination: current.destination || "", startDate: current.startDate?.slice(0, 10) || "", endDate: current.endDate?.slice(0, 10) || "", travelers: current.travelers || 1, budget: current.budget ?? 0, travelStyle: current.travelStyle || "balanced", interests: (current.interests || []).join(", "), status: current.status || "planned", currency: current.currency || "USD" },
             queries: { name: current.name || "", email: current.email || "", query: current.query || "", status: current.status || "open" },
             feedback: { name: current.name || "", email: current.email || "", rating: current.rating || 5, message: current.message || "", page: current.page || "", trip: current.trip?._id || "" },
-            destinations: { name: current.name || "", aliases: (current.aliases || []).join(", "), country: current.country || "", region: current.region || "", description: current.description || "", imageUrl: current.imageUrl || "", imageCreditLabel: current.imageCredit?.label || "", imageCreditUrl: current.imageCredit?.url || "", currency: current.currency || "USD", active: current.active ?? true },
+            destinations: { name: current.name || "", country: current.country || "", region: current.region || "", description: current.description || "", imageUrl: current.imageUrl || "", currency: current.currency || "USD", active: current.active ?? true },
             itineraries: { trip: current.trip?._id || "", day: current.day || 1, date: current.date?.slice(0, 10) || "", title: current.title || "", estimatedCost: current.estimatedCost ?? 0, activities: JSON.stringify(current.activities || [], null, 2) },
             expenses: { trip: current.trip?._id || "", category: current.category || "", description: current.description || "", amount: current.amount ?? 0, currency: current.currency || "USD", date: current.date?.slice(0, 10) || new Date().toISOString().slice(0, 10) },
         };
@@ -216,13 +215,7 @@ function AdminCollectionsDashboard() {
             try { payload.activities = JSON.parse(payload.activities || "[]"); } catch { setError("Activities must be valid JSON."); setSaving(false); return; }
         }
         if (type === "expenses") payload.amount = Number(payload.amount);
-        if (type === "destinations") {
-            payload.active = payload.active === true || payload.active === "true";
-            payload.aliases = payload.aliases.split(",").map((alias) => alias.trim()).filter(Boolean);
-            payload.imageCredit = { label: payload.imageCreditLabel.trim(), url: payload.imageCreditUrl.trim() };
-            delete payload.imageCreditLabel;
-            delete payload.imageCreditUrl;
-        }
+        if (type === "destinations") payload.active = Boolean(payload.active);
         try {
             const path = `/admin/${endpoints[type]}${dialog.mode === "edit" ? `/${dialog.record._id}` : ""}`;
             const response = dialog.mode === "edit" ? await api.put(path, payload) : await api.post(path, payload);
@@ -240,28 +233,6 @@ function AdminCollectionsDashboard() {
             setError(requestError.response?.data?.message || "Unable to save changes");
         } finally {
             setSaving(false);
-        }
-    };
-
-    const draftDestinationDescription = async () => {
-        if (!form.name?.trim()) {
-            setError("Enter a location name before drafting its description.");
-            return;
-        }
-
-        setGeneratingDescription(true);
-        setError("");
-        try {
-            const response = await api.post("/admin/destinations/ai-description", {
-                name: form.name,
-                country: form.country,
-                region: form.region,
-            });
-            setForm((current) => ({ ...current, description: response.data.description }));
-        } catch (requestError) {
-            setError(requestError.response?.data?.message || "Unable to draft a location description.");
-        } finally {
-            setGeneratingDescription(false);
         }
     };
 
@@ -285,7 +256,7 @@ function AdminCollectionsDashboard() {
                 <div className="admin-main-panel">
                     <p className="admin-label">TRIPAI / ADMIN</p>
                     <h1>Travel operations</h1>
-                    <p className="admin-intro">Manage travelers, trips, and every destination shown across the app. Update each location's image and description, or draft descriptions with Gemini.</p>
+                    <p className="admin-intro">Manage travelers, trips, and the featured destinations shown on user dashboards.</p>
                     {error && <div className="admin-error" role="alert">{error}</div>}
                     <section className="admin-stats" aria-label="Dashboard summaries">
                         <div><Users size={20} /><strong>{stats.totalUsers}</strong><span>Total users</span></div>
@@ -303,7 +274,7 @@ function AdminCollectionsDashboard() {
                             {selectedView === "feedback" && <select aria-label="Filter feedback by rating" value={filters.rating} onChange={(event) => setFilters({ ...filters, rating: event.target.value })}><option value="">All ratings</option>{[5, 4, 3, 2, 1].map((rating) => <option key={rating} value={rating}>{rating} stars</option>)}</select>}
                             {["trips", "itineraries", "feedback"].includes(selectedView) && <select aria-label="Filter by destination" value={filters.destination} onChange={(event) => setFilters({ ...filters, destination: event.target.value })}><option value="">All destinations</option>{[...new Set(data.trips.map((trip) => trip.destination))].sort().map((destination) => <option key={destination} value={destination}>{destination}</option>)}</select>}
                             <div className="collection-result-count">{filteredRows.length} records</div>
-                            {canCreate && <button type="button" className="edit-save-button" onClick={() => openEditor(null, true)}>Add {selectedView === "itineraries" ? "itinerary item" : selectedView === "expenses" ? "expense" : selectedView === "destinations" ? "location" : "feedback"}</button>}
+                            {canCreate && <button type="button" className="edit-save-button" onClick={() => openEditor(null, true)}>Add {selectedView === "itineraries" ? "itinerary item" : selectedView === "expenses" ? "expense" : selectedView === "destinations" ? "featured destination" : "feedback"}</button>}
                         </div>
                         {selectedView === "itineraries" && <nav className="itinerary-destination-list" aria-label="Itinerary destinations">
                             <button type="button" className={!filters.destination ? "itinerary-destination active" : "itinerary-destination"} onClick={() => setFilters({ ...filters, destination: "" })}>All destinations <span>{itinerarySummaries.length}</span></button>
@@ -332,30 +303,7 @@ function AdminCollectionsDashboard() {
                         {dialog.type === "trips" && <><Field label="Destination" value={form.destination} onChange={(value) => setForm({ ...form, destination: value })} required /><div className="edit-form-row"><Field label="Start date" type="date" value={form.startDate} onChange={(value) => setForm({ ...form, startDate: value })} required /><Field label="End date" type="date" value={form.endDate} onChange={(value) => setForm({ ...form, endDate: value })} required /></div><div className="edit-form-row"><Field label="Travelers" type="number" min="1" value={form.travelers} onChange={(value) => setForm({ ...form, travelers: value })} required /><Field label="Budget" type="number" min="0" step="0.01" value={form.budget} onChange={(value) => setForm({ ...form, budget: value })} required /></div><div className="edit-form-row"><SelectField label="Status" value={form.status} options={[["planned", "Planned"], ["booked", "Booked"], ["completed", "Completed"], ["cancelled", "Cancelled"]]} onChange={(value) => setForm({ ...form, status: value })} /><Field label="Currency" value={form.currency} onChange={(value) => setForm({ ...form, currency: value.toUpperCase() })} maxLength="3" /></div><Field label="Interests (comma-separated)" value={form.interests} onChange={(value) => setForm({ ...form, interests: value })} /></>}
                         {dialog.type === "queries" && <><Field label="Name" value={form.name} onChange={(value) => setForm({ ...form, name: value })} required /><Field label="Email" type="email" value={form.email} onChange={(value) => setForm({ ...form, email: value })} required /><Field label="Query" multiline value={form.query} onChange={(value) => setForm({ ...form, query: value })} required /><SelectField label="Status" value={form.status} options={statusOptions} onChange={(value) => setForm({ ...form, status: value })} /></>}
                         {dialog.type === "feedback" && <><Field label="Name" value={form.name} onChange={(value) => setForm({ ...form, name: value })} required /><Field label="Email" type="email" value={form.email} onChange={(value) => setForm({ ...form, email: value })} required /><SelectField label="Rating" value={form.rating} options={[5, 4, 3, 2, 1].map((rating) => [rating, `${rating} stars`])} onChange={(value) => setForm({ ...form, rating: value })} /><Field label="Message" multiline value={form.message} onChange={(value) => setForm({ ...form, message: value })} required /><Field label="Page" value={form.page} onChange={(value) => setForm({ ...form, page: value })} /><SelectField label="Trip (optional)" value={form.trip} options={[["", "General feedback"], ...data.trips.map((trip) => [trip._id, trip.destination])]} onChange={(value) => setForm({ ...form, trip: value })} /></>}
-                        {dialog.type === "destinations" && <>
-                            <Field label="Location name" value={form.name} onChange={(value) => setForm({ ...form, name: value })} required maxLength="120" />
-                            <Field label="Search aliases (comma-separated, optional)" value={form.aliases} onChange={(value) => setForm({ ...form, aliases: value })} maxLength="500" />
-                            <div className="edit-form-row">
-                                <Field label="Country" value={form.country} onChange={(value) => setForm({ ...form, country: value })} maxLength="100" />
-                                <Field label="Region" value={form.region} onChange={(value) => setForm({ ...form, region: value })} maxLength="100" />
-                            </div>
-                            <div className="destination-description-tools">
-                                <Field label="Description" multiline value={form.description} onChange={(value) => setForm({ ...form, description: value })} maxLength="2000" />
-                                <button type="button" className="destination-ai-button" onClick={draftDestinationDescription} disabled={generatingDescription || saving || !form.name?.trim()}>
-                                    <Sparkles size={16} /> {generatingDescription ? "Drafting..." : "Draft with Gemini"}
-                                </button>
-                            </div>
-                            <Field label="Image URL (HTTP or HTTPS)" type="url" value={form.imageUrl} onChange={(value) => setForm({ ...form, imageUrl: value })} maxLength="2048" />
-                            {form.imageUrl && <img className="destination-image-preview" src={form.imageUrl} alt="Location preview" onError={(event) => { event.currentTarget.src = "/destination-fallback.svg"; }} />}
-                            <div className="edit-form-row">
-                                <Field label="Image credit (optional)" value={form.imageCreditLabel} onChange={(value) => setForm({ ...form, imageCreditLabel: value })} maxLength="200" />
-                                <Field label="Image credit URL (optional)" type="url" value={form.imageCreditUrl} onChange={(value) => setForm({ ...form, imageCreditUrl: value })} maxLength="2048" />
-                            </div>
-                            <div className="edit-form-row">
-                                <Field label="Currency" value={form.currency} onChange={(value) => setForm({ ...form, currency: value.toUpperCase() })} maxLength="3" />
-                                <SelectField label="Availability" value={String(form.active)} options={[["true", "Active"], ["false", "Inactive"]]} onChange={(value) => setForm({ ...form, active: value === "true" })} />
-                            </div>
-                        </>}
+                        {dialog.type === "destinations" && <><Field label="Name" value={form.name} onChange={(value) => setForm({ ...form, name: value })} required maxLength="120" /><div className="edit-form-row"><Field label="Country" value={form.country} onChange={(value) => setForm({ ...form, country: value })} /><Field label="Region" value={form.region} onChange={(value) => setForm({ ...form, region: value })} /></div><Field label="Description" multiline value={form.description} onChange={(value) => setForm({ ...form, description: value })} maxLength="2000" /><Field label="Image URL (HTTP or HTTPS)" type="url" value={form.imageUrl} onChange={(value) => setForm({ ...form, imageUrl: value })} maxLength="2048" /><Field label="Currency" value={form.currency} onChange={(value) => setForm({ ...form, currency: value.toUpperCase() })} maxLength="3" /><SelectField label="Availability" value={String(form.active)} options={[["true", "Active"], ["false", "Inactive"]]} onChange={(value) => setForm({ ...form, active: value === "true" })} /></>}
                         {dialog.type === "itineraries" && <><SelectField label="Trip" value={form.trip} options={data.trips.map((trip) => [trip._id, trip.destination])} onChange={(value) => setForm({ ...form, trip: value })} required /><div className="edit-form-row"><Field label="Day" type="number" min="1" value={form.day} onChange={(value) => setForm({ ...form, day: value })} required /><Field label="Date" type="date" value={form.date} onChange={(value) => setForm({ ...form, date: value })} required /></div><Field label="Title" value={form.title} onChange={(value) => setForm({ ...form, title: value })} required /><Field label="Estimated cost" type="number" min="0" step="0.01" value={form.estimatedCost} onChange={(value) => setForm({ ...form, estimatedCost: value })} /><Field label="Activities (JSON array)" multiline value={form.activities} onChange={(value) => setForm({ ...form, activities: value })} /></>}
                         {dialog.type === "expenses" && <><SelectField label="Trip" value={form.trip} options={data.trips.map((trip) => [trip._id, trip.destination])} onChange={(value) => setForm({ ...form, trip: value })} required /><Field label="Category" value={form.category} onChange={(value) => setForm({ ...form, category: value })} required /><Field label="Description" value={form.description} onChange={(value) => setForm({ ...form, description: value })} /><div className="edit-form-row"><Field label="Amount" type="number" min="0" step="0.01" value={form.amount} onChange={(value) => setForm({ ...form, amount: value })} required /><Field label="Currency" value={form.currency} onChange={(value) => setForm({ ...form, currency: value.toUpperCase() })} maxLength="3" /></div><Field label="Date" type="date" value={form.date} onChange={(value) => setForm({ ...form, date: value })} required /></>}
                         <div className="edit-modal-actions"><button type="button" className="edit-cancel-button" onClick={() => setDialog(null)} disabled={saving}>Cancel</button><button type="submit" className="edit-save-button" disabled={saving}>{saving ? "Saving..." : "Save changes"}</button></div>
