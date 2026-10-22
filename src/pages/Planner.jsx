@@ -53,9 +53,12 @@ function Planner() {
     const [tripDays, setTripDays] = useState("");
     const [suggestions, setSuggestions] = useState([]);
     const [suggestionType, setSuggestionType] = useState("");
+    const [suggestionSource, setSuggestionSource] = useState("");
     const [selectedPlaces, setSelectedPlaces] = useState([]);
     const [findingSuggestions, setFindingSuggestions] = useState(false);
     const [suggestionError, setSuggestionError] = useState("");
+    const [budgetInput, setBudgetInput] = useState("");
+    const [travelStyle, setTravelStyle] = useState("balanced");
     const formRef = useRef(null);
     const suggestionRequestRef = useRef(0);
 
@@ -116,27 +119,30 @@ function Planner() {
         const requestId = ++suggestionRequestRef.current;
         setSuggestionError("");
         setSuggestions([]);
+        setSuggestionSource("");
         setFindingSuggestions(true);
 
         try {
-            const form = formRef.current;
             const response = await api.post("/trips/suggestions", {
                 destination: destinationQuery.trim(),
                 days: Number(tripDays) || 3,
                 interests,
-                travelStyle: form.travelStyle.value,
-                budget: Number(form.budget.value) || undefined,
+                travelStyle,
+                budget: Number(budgetInput) || undefined,
             });
 
             if (requestId === suggestionRequestRef.current) {
                 setSuggestions(response.data.suggestions);
                 setSuggestionType(response.data.type);
+                setSuggestionSource(response.data.source || "wikivoyage");
             }
         } catch (requestError) {
             if (requestId === suggestionRequestRef.current) {
                 setSuggestionError(
                     requestError.response?.data?.message ||
-                    "Could not get AI ideas. Please try again."
+                    (requestError.response
+                        ? "Could not find travel ideas. Please try again."
+                        : "Cannot reach the TripAI server. Check that the backend is running and the API URL is correct.")
                 );
             }
         } finally {
@@ -144,7 +150,7 @@ function Planner() {
                 setFindingSuggestions(false);
             }
         }
-    }, [destination, interests, tripDays]);
+    }, [budgetInput, destination, interests, travelStyle, tripDays]);
 
     useEffect(() => {
         const days = Number(tripDays) || (destination.trim() ? 3 : 0);
@@ -248,9 +254,10 @@ function Planner() {
             // SUCCESS
             // ============================
 
-            setSuccess(planResponse.data.generatedBy === "wikivoyage"
+            const planMessage = planResponse.data.generatedBy === "wikivoyage"
                 ? "Your guide-based itinerary is ready!"
-                : "Your AI itinerary is ready!");
+                : "Your AI itinerary is ready!";
+            setSuccess(`${planMessage} ${response.data.emailMessage || ""}`.trim());
 
 
             // ============================
@@ -259,7 +266,7 @@ function Planner() {
 
             setTimeout(() => {
                 navigate(`/trips/${response.data.trip._id}`);
-            }, 800);
+            }, 1800);
 
 
         } catch (error) {
@@ -387,7 +394,7 @@ function Planner() {
                                 disabled={findingSuggestions || (!tripDays && !destination.trim())}
                             >
                                 <Sparkles size={17} />
-                                {findingSuggestions ? "Searching guides..." : "Find travel ideas"}
+                                {findingSuggestions ? "Finding places..." : "Find travel ideas"}
                             </button>
                         </div>
 
@@ -441,7 +448,13 @@ function Planner() {
                                     })}
                                 </div>
                                 <p className="suggestion-attribution">
-                                    Guide summaries from <a href="https://en.wikivoyage.org/" target="_blank" rel="noreferrer">Wikivoyage</a>.
+                                    {suggestionSource === "wikivoyage" ? (
+                                        <>Guide summaries from <a href="https://en.wikivoyage.org/" target="_blank" rel="noreferrer">Wikivoyage</a>.</>
+                                    ) : suggestionSource === "gemini" ? (
+                                        "Suggestions tailored to your trip preferences."
+                                    ) : (
+                                        "Suggested Goa highlights matched to your interests."
+                                    )}
                                 </p>
                             </div>
                         )}
@@ -545,6 +558,8 @@ function Planner() {
                                 name="budget"
                                 min="1000"
                                 placeholder="25000"
+                                value={budgetInput}
+                                onChange={(event) => setBudgetInput(event.target.value)}
                                 required
                             />
 
@@ -579,7 +594,11 @@ function Planner() {
                         </label>
 
 
-                        <select name="travelStyle">
+                        <select
+                            name="travelStyle"
+                            value={travelStyle}
+                            onChange={(event) => setTravelStyle(event.target.value)}
+                        >
 
                             <option value="balanced">
                                 Balanced

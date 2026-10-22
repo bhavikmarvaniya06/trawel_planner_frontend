@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://trawel-planner-backend.onrender.com/api",
+    baseURL: process.env.REACT_APP_API_URL || "https://trawel-planner-backend.onrender.com/api",
     headers: {
         "Content-Type": "application/json",
     },

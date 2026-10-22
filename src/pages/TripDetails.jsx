@@ -7,6 +7,7 @@ import {
     Wallet,
     MapPin,
     Sparkles,
+    Mail,
 } from "lucide-react";
 
 import api from "../services/api";
@@ -25,6 +26,9 @@ function TripDetails() {
     const [loading, setLoading] = useState(true);
 
     const [error, setError] = useState("");
+    const [emailSending, setEmailSending] = useState(false);
+    const [emailMessage, setEmailMessage] = useState("");
+    const [emailError, setEmailError] = useState("");
 
 
     useEffect(() => {
@@ -62,6 +66,24 @@ function TripDetails() {
         fetchTrip();
 
     }, [id]);
+
+    const handleEmailTripPdf = async () => {
+        setEmailSending(true);
+        setEmailMessage("");
+        setEmailError("");
+
+        try {
+            const response = await api.post(`/trips/${id}/email`);
+            setEmailMessage(response.data.message || "Trip PDF sent to your login email.");
+        } catch (emailRequestError) {
+            setEmailError(
+                emailRequestError.response?.data?.message ||
+                "Unable to send the trip PDF. Check your backend email settings."
+            );
+        } finally {
+            setEmailSending(false);
+        }
+    };
 
 
     const formatDate = (date) => {
@@ -146,6 +168,15 @@ function TripDetails() {
                         {formatDate(trip.endDate)}
                     </p>
 
+                </div>
+
+                <div className="trip-email-action">
+                    <button type="button" onClick={handleEmailTripPdf} disabled={emailSending}>
+                        <Mail size={17} />
+                        {emailSending ? "Sending PDF..." : "Email trip PDF"}
+                    </button>
+                    {emailMessage && <p role="status">{emailMessage}</p>}
+                    {emailError && <p role="alert">{emailError}</p>}
                 </div>
 
             </section>

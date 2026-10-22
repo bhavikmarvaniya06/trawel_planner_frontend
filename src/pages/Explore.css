@@ -167,6 +167,14 @@
     padding: 65px 6%;
 }
 
+.explore-catalog-error {
+    margin: 0 0 20px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: #fef3f2;
+    color: #b42318;
+}
+
 .explore-section-header p {
     margin: 0 0 7px;
 

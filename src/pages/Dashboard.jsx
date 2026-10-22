@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import SiteNavbar from "../components/SiteNavbar";
+import { destinationFallbackImage } from "../data/destinations";
 
 import "./Dashboard.css";
 
@@ -35,10 +36,12 @@ function Dashboard() {
 
 
     const [trips, setTrips] = useState([]);
+    const [featuredDestinations, setFeaturedDestinations] = useState([]);
 
     const [loading, setLoading] = useState(true);
 
     const [error, setError] = useState("");
+    const [featuredDestinationsError, setFeaturedDestinationsError] = useState("");
 
 
     // ============================
@@ -77,6 +80,22 @@ function Dashboard() {
 
         fetchTrips();
 
+    }, []);
+
+    useEffect(() => {
+        const fetchFeaturedDestinations = async () => {
+            try {
+                const response = await api.get("/destinations");
+                setFeaturedDestinations(response.data.destinations || []);
+            } catch (requestError) {
+                console.error("Failed to fetch featured destinations:", requestError);
+                setFeaturedDestinationsError(
+                    requestError.response?.data?.message || "Unable to load featured destinations"
+                );
+            }
+        };
+
+        fetchFeaturedDestinations();
     }, []);
 
 
@@ -141,6 +160,52 @@ function Dashboard() {
                 </button>
 
             </section>
+
+            {featuredDestinations.length > 0 && (
+                <section className="featured-destinations-section">
+                    <div className="section-heading">
+                        <div>
+                            <h2>Featured destinations</h2>
+                            <p>Travel ideas picked by TripAI</p>
+                        </div>
+                        <button onClick={() => navigate("/explore")}>
+                            Explore all
+                        </button>
+                    </div>
+
+                    <div className="featured-destinations-grid">
+                        {featuredDestinations.map((destination) => (
+                            <article className="featured-destination-card" key={destination._id}>
+                                <img
+                                    src={destination.imageUrl || destinationFallbackImage}
+                                    alt={destination.name}
+                                    loading="lazy"
+                                    onError={(event) => {
+                                        event.currentTarget.src = destinationFallbackImage;
+                                    }}
+                                />
+                                <div className="featured-destination-content">
+                                    <p className="featured-destination-location">
+                                        {[destination.region, destination.country].filter(Boolean).join(", ") || "Featured destination"}
+                                    </p>
+                                    <h3>{destination.name}</h3>
+                                    {destination.description && <p>{destination.description}</p>}
+                                    <button type="button" onClick={() => navigate("/planner")}>
+                                        Plan a trip
+                                    </button>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            )}
+            {featuredDestinationsError && (
+                <section className="featured-destinations-section">
+                    <div className="dashboard-error" role="alert">
+                        {featuredDestinationsError}
+                    </div>
+                </section>
+            )}
 
 
 

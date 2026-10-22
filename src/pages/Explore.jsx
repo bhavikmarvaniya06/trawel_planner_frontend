@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
     MapPin,
@@ -6,12 +7,43 @@ import {
 } from "lucide-react";
 
 import SiteNavbar from "../components/SiteNavbar";
+import api from "../services/api";
 import destinations, { destinationFallbackImage } from "../data/destinations";
 import "./Explore.css";
 
 
 function Explore() {
-    const filteredDestinations = destinations;
+    const [adminDestinations, setAdminDestinations] = useState([]);
+    const [catalogError, setCatalogError] = useState("");
+
+    useEffect(() => {
+        const loadAdminDestinations = async () => {
+            try {
+                const response = await api.get("/destinations");
+                setAdminDestinations(response.data.destinations || []);
+            } catch (requestError) {
+                console.error("Failed to fetch featured destinations:", requestError);
+                setCatalogError(
+                    requestError.response?.data?.message || "Unable to load featured destinations"
+                );
+            }
+        };
+
+        loadAdminDestinations();
+    }, []);
+
+    const adminDestinationNames = new Set(
+        adminDestinations.map((destination) => destination.name.trim().toLowerCase())
+    );
+    const filteredDestinations = [
+        ...adminDestinations.map((destination) => ({
+            ...destination,
+            image: destination.imageUrl || destinationFallbackImage,
+        })),
+        ...destinations.filter(
+            (destination) => !adminDestinationNames.has(destination.name.trim().toLowerCase())
+        ),
+    ];
 
 
     return (
@@ -81,6 +113,7 @@ function Explore() {
 
                 </div>
 
+                {catalogError && <p className="explore-catalog-error" role="alert">{catalogError}</p>}
 
                 <div className="destination-grid">
 
@@ -88,7 +121,7 @@ function Explore() {
 
                         <div
                             className="destination-card"
-                            key={destination.name}
+                            key={destination._id || destination.name}
                         >
 
                             <div className="destination-image">

@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import App from './App';
+import api from './services/api';
 
 let mockUser = null;
 let mockLogin = jest.fn(async () => {
@@ -17,6 +18,11 @@ jest.mock('./context/AuthContext', () => ({
     loginWithOtp: jest.fn(),
     logout: jest.fn(),
   }),
+}));
+
+jest.mock('./services/api', () => ({
+  __esModule: true,
+  default: { get: jest.fn() },
 }));
 
 test('opens the login page at the root URL', async () => {
@@ -40,6 +46,7 @@ test('shows the public home page at /home', async () => {
 });
 
 test('Explore shows every destination and image fallback', async () => {
+  api.get.mockResolvedValue({ data: { destinations: [] } });
   window.history.replaceState({}, '', '/explore');
   render(<App />);
 
