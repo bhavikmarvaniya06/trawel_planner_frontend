@@ -11,12 +11,14 @@ import {
     Trees,
     ShoppingBag,
     Landmark,
+    Route,
 } from "lucide-react";
 
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import SiteNavbar from "../components/SiteNavbar";
+import OptimizedRouteMap from "../components/OptimizedRouteMap";
 
 import "./Planner.css";
 
@@ -50,7 +52,12 @@ function Planner() {
 
     const [success, setSuccess] = useState("");
     const [destination, setDestination] = useState(() => searchParams.get("destination") || "");
+    const [destinationPackage, setDestinationPackage] = useState(null);
+    const [destinationPackageLoading, setDestinationPackageLoading] = useState(
+        () => Boolean(searchParams.get("destinationPackageId"))
+    );
     const [tripDays, setTripDays] = useState("");
+    const [travelerCount, setTravelerCount] = useState("2");
     const [suggestions, setSuggestions] = useState([]);
     const [suggestionType, setSuggestionType] = useState("");
     const [suggestionSource, setSuggestionSource] = useState("");
@@ -59,8 +66,58 @@ function Planner() {
     const [suggestionError, setSuggestionError] = useState("");
     const [budgetInput, setBudgetInput] = useState("");
     const [travelStyle, setTravelStyle] = useState("balanced");
+    const [routeObjective, setRouteObjective] = useState("balanced");
+    const [optimizingRoute, setOptimizingRoute] = useState(false);
+    const [optimizedRoute, setOptimizedRoute] = useState(null);
+    const [routeError, setRouteError] = useState("");
     const formRef = useRef(null);
     const suggestionRequestRef = useRef(0);
+    const routeRequestRef = useRef(0);
+    const destinationPackageId = searchParams.get("destinationPackageId");
+
+    const invalidateOptimizedRoute = () => {
+        routeRequestRef.current += 1;
+        setOptimizingRoute(false);
+        setOptimizedRoute(null);
+        setRouteError("");
+    };
+
+    useEffect(() => {
+        if (!destinationPackageId) {
+            setDestinationPackage(null);
+            setDestinationPackageLoading(false);
+            return undefined;
+        }
+
+        let active = true;
+        setDestinationPackageLoading(true);
+        api.get(`/destinations/${encodeURIComponent(destinationPackageId)}`)
+            .then((response) => {
+                if (!active) return;
+                const packageDetails = response.data.destination;
+                setDestinationPackage(packageDetails);
+                setDestination(packageDetails.name);
+                setTripDays(String(packageDetails.durationDays));
+                setTravelerCount("1");
+                setBudgetInput(String(Number(packageDetails.price) || 0));
+                setError("");
+            })
+            .catch((requestError) => {
+                if (!active) return;
+                setDestinationPackage(null);
+                setError(
+                    requestError.response?.data?.message
+                    || "This destination package is no longer available."
+                );
+            })
+            .finally(() => {
+                if (active) setDestinationPackageLoading(false);
+            });
+
+        return () => {
+            active = false;
+        };
+    }, [destinationPackageId]);
 
 
     // ============================
@@ -167,16 +224,81 @@ function Planner() {
         return () => clearTimeout(timeout);
     }, [destination, findSuggestions, tripDays]);
 
-    const selectSuggestion = async (suggestion) => {
+    const selectSuggestion = (suggestion) => {
+        invalidateOptimizedRoute();
         if (suggestionType === "destinations") {
             setDestination(suggestion.name);
             setSelectedPlaces([]);
             return;
         }
 
-        setSelectedPlaces((current) => current.includes(suggestion.name)
-            ? current.filter((place) => place !== suggestion.name)
-            : [...current, suggestion.name]);
+        setSelectedPlaces((current) => {
+            return current.includes(suggestion.name)
+                ? current.filter((place) => place !== suggestion.name)
+                : [...current, suggestion.name];
+        });
+    };
+
+    const optimizeSelectedRoute = async () => {
+        if (!destination.trim()) {
+            setRouteError("Enter your trip destination first so we know where the route starts.");
+            return;
+        }
+
+        const requestId = ++routeRequestRef.current;
+        setRouteError("");
+        setOptimizedRoute(null);
+        setOptimizingRoute(true);
+        try {
+            const response = await api.post("/trips/optimize-route", {
+                origin: destination.trim(),
+                stops: selectedPlaces,
+                travelMode: "DRIVE",
+                objective: routeObjective,
+            });
+            if (requestId === routeRequestRef.current) {
+                setSelectedPlaces(response.data.stops.map((stop) => stop.name));
+                setOptimizedRoute(response.data);
+            }
+        } catch (requestError) {
+            console.error("Route optimization error:", requestError);
+            if (requestId === routeRequestRef.current) {
+                setRouteError(
+                    requestError.response?.data?.message
+                    || "Unable to optimize this route. Check your connection and try again."
+                );
+            }
+        } finally {
+            if (requestId === routeRequestRef.current) setOptimizingRoute(false);
+        }
+    };
+
+    const formatRouteDistance = (meters) => (
+        `${(Number(meters || 0) / 1000).toLocaleString("en-IN", {
+            maximumFractionDigits: 1,
+        })} km`
+    );
+
+    const formatRouteDuration = (seconds) => {
+        const totalMinutes = Math.round(Number(seconds || 0) / 60);
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        if (hours === 0) return `${minutes} min`;
+        return minutes ? `${hours} hr ${minutes} min` : `${hours} hr`;
+    };
+
+    const formatRouteCost = (amount) => `₹${Math.round(Number(amount || 0)).toLocaleString("en-IN")}`;
+
+    const getOpenStreetMapDirectionsUrl = (route) => {
+        const waypoints = route.route.waypoints
+            .filter((waypoint) => waypoint.location)
+            .map(({ location }) => `${location.latitude},${location.longitude}`)
+            .join(";");
+        const query = new URLSearchParams({
+            engine: "fossgis_osrm_car",
+            route: waypoints,
+        });
+        return `https://www.openstreetmap.org/directions?${query.toString()}`;
     };
 
 
@@ -196,8 +318,9 @@ function Planner() {
         try {
 
             const form = e.target;
-            const startDate = form.startDate.value;
-            const days = Number(form.days.value);
+            const readFormValue = (name) => form.elements.namedItem(name)?.value || "";
+            const startDate = readFormValue("startDate");
+            const days = Number(readFormValue("days"));
             const endDate = new Date(`${startDate}T00:00:00.000Z`);
             endDate.setUTCDate(endDate.getUTCDate() + days - 1);
 
@@ -219,18 +342,21 @@ function Planner() {
                 places: selectedPlaces,
 
                 travelers:
-                    Number(form.travelers.value),
+                    Number(readFormValue("travelers")),
 
                 budget:
-                    Number(form.budget.value),
+                    Number(readFormValue("budget")),
 
                 travelStyle:
-                    form.travelStyle.value,
+                    readFormValue("travelStyle"),
 
                 interests:
                     interests,
 
             };
+            if (destinationPackage) {
+                tripData.destinationPackageId = destinationPackage._id;
+            }
 
 
             // ============================
@@ -241,10 +367,12 @@ function Planner() {
             // SEND TO BACKEND
             // ============================
 
-            const planResponse = await api.post("/ai/plan", tripData);
+            const planResponse = destinationPackage
+                ? null
+                : await api.post("/ai/plan", tripData);
             const response = await api.post("/trips", {
                 ...tripData,
-                itinerary: planResponse.data.itinerary,
+                ...(planResponse ? { itinerary: planResponse.data.itinerary } : {}),
             });
 
 
@@ -258,9 +386,11 @@ function Planner() {
             // SUCCESS
             // ============================
 
-            const planMessage = planResponse.data.generatedBy === "wikivoyage"
-                ? "Your guide-based itinerary is ready!"
-                : "Your AI itinerary is ready!";
+            const planMessage = destinationPackage
+                ? "Your destination package trip is saved!"
+                : planResponse.data.generatedBy === "wikivoyage"
+                    ? "Your guide-based itinerary is ready!"
+                    : "Your AI itinerary is ready!";
             setSuccess(`${planMessage} ${response.data.emailMessage || ""}`.trim());
 
 
@@ -269,7 +399,12 @@ function Planner() {
             // ============================
 
             setTimeout(() => {
-                navigate(`/trips/${response.data.trip._id}`);
+                navigate(`/trips/${response.data.trip._id}`, {
+                    state: {
+                        emailSent: response.data.emailSent,
+                        emailMessage: response.data.emailMessage,
+                    },
+                });
             }, 1800);
 
 
@@ -280,6 +415,12 @@ function Planner() {
                 error
             );
 
+            if (error.response?.status === 402) {
+                navigate("/dashboard?purchase=required", {
+                    state: { purchaseMessage: error.response.data?.message },
+                });
+                return;
+            }
 
             setError(
                 error.response?.data?.message ||
@@ -321,12 +462,29 @@ function Planner() {
 
 
                 <p>
-                    Tell us a little about your trip and our AI
-                    will create a personalized itinerary for you.
+                    {destinationPackage
+                        ? "Choose your dates and travelers to add this destination package to your trips."
+                        : "Tell us a little about your trip and our AI will create a personalized itinerary for you."}
                 </p>
 
             </section>
 
+            {destinationPackageLoading && (
+                <p className="planner-package-status" role="status">Loading destination package...</p>
+            )}
+            {destinationPackage && (
+                <section className="planner-package-summary" aria-label="Selected destination package">
+                    <div>
+                        <strong>{destinationPackage.name}</strong>
+                        <span>{destinationPackage.durationDays} days · {destinationPackage.currency} {Number(destinationPackage.price).toLocaleString()} per traveler</span>
+                    </div>
+                    <p>Saving this trip uses your existing free-trip or trip-credit rules. No destination payment is collected here.</p>
+                    {destinationPackage.bookingDetails?.notes && <p>{destinationPackage.bookingDetails.notes}</p>}
+                    {destinationPackage.bookingDetails?.available === false && (
+                        <p role="alert">This package is currently unavailable. Choose another destination.</p>
+                    )}
+                </section>
+            )}
 
 
             {/* ============================
@@ -366,10 +524,12 @@ function Planner() {
                                     type="text"
                                     name="destination"
                                     value={destination}
+                                    readOnly={Boolean(destinationPackage)}
                                     onChange={(event) => {
                                         setDestination(event.target.value);
                                         setSuggestions([]);
                                         setSelectedPlaces([]);
+                                        invalidateOptimizedRoute();
                                     }}
                                     placeholder="e.g. Goa, Paris, Dubai..."
                                 />
@@ -383,6 +543,7 @@ function Planner() {
                                     min="1"
                                     max="30"
                                     value={tripDays}
+                                    readOnly={Boolean(destinationPackage)}
                                     onChange={(event) => setTripDays(event.target.value)}
                                     required
                                 />
@@ -393,9 +554,10 @@ function Planner() {
                             <p>Enter a destination for local places, or only trip length for destination ideas. Suggestions use 3 days if duration is blank.</p>
                             <button
                                 type="button"
-                                className="suggestions-trigger"
+                                className={`suggestions-trigger${findingSuggestions ? " is-loading" : ""}`}
                                 onClick={() => findSuggestions()}
                                 disabled={findingSuggestions || (!tripDays && !destination.trim())}
+                                aria-busy={findingSuggestions}
                             >
                                 <Sparkles size={17} />
                                 {findingSuggestions ? "Finding places..." : "Find travel ideas"}
@@ -439,7 +601,7 @@ function Planner() {
                                                     </button>
                                                     <a
                                                         className="suggestion-map-link"
-                                                        href={suggestion.mapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${suggestion.name} ${destination}`)}`}
+                                                        href={suggestion.mapsUrl || `https://www.openstreetmap.org/search?query=${encodeURIComponent(`${suggestion.name} ${destination}`)}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                     >
@@ -451,6 +613,122 @@ function Planner() {
                                         );
                                     })}
                                 </div>
+                                {suggestionType === "places" && (
+                                    <section className="route-optimizer" aria-labelledby="route-optimizer-title">
+                                        <div className="route-optimizer-heading">
+                                            <div className="route-optimizer-icon"><Route size={19} /></div>
+                                            <div>
+                                                <h3 id="route-optimizer-title">Smart route optimizer</h3>
+                                                <p>
+                                                    {destination ? `Start in ${destination}` : "Set a trip destination to choose a starting point"}.
+                                                    {" "}Select 2–8 places to compare routes and arrange the best stop order.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="route-optimizer-controls">
+                                            <label>
+                                                Optimize for
+                                                <select
+                                                    value={routeObjective}
+                                                    onChange={(event) => {
+                                                        setRouteObjective(event.target.value);
+                                                        invalidateOptimizedRoute();
+                                                    }}
+                                                >
+                                                    <option value="balanced">Balanced time, distance & cost</option>
+                                                    <option value="time">Fastest travel time</option>
+                                                    <option value="distance">Shortest distance</option>
+                                                    <option value="cost">Lowest estimated cost</option>
+                                                </select>
+                                            </label>
+                                            <button
+                                                className={`route-optimize-button${optimizingRoute ? " is-loading" : ""}`}
+                                                type="button"
+                                                onClick={optimizeSelectedRoute}
+                                                disabled={optimizingRoute || selectedPlaces.length < 2 || selectedPlaces.length > 8 || !destination.trim()}
+                                                aria-busy={optimizingRoute}
+                                            >
+                                                <Route size={17} />
+                                                {optimizingRoute ? "Finding your best route..." : "Optimize selected stops"}
+                                            </button>
+                                        </div>
+                                        <p className="route-optimizer-hint">
+                                            Free driving routes use OpenStreetMap and OSRM. Travel times are estimates without live traffic; transport cost is estimated, not a live fare.
+                                        </p>
+                                        {routeError && <p className="route-optimizer-error" role="alert">{routeError}</p>}
+
+                                        {optimizedRoute && (
+                                            <div className="optimized-route-results" aria-live="polite">
+                                                <div className="optimized-route-summary">
+                                                    <div>
+                                                        <span>Total travel time</span>
+                                                        <strong>{formatRouteDuration(optimizedRoute.summary.durationSeconds)}</strong>
+                                                    </div>
+                                                    <div>
+                                                        <span>Total distance</span>
+                                                        <strong>{formatRouteDistance(optimizedRoute.summary.distanceMeters)}</strong>
+                                                    </div>
+                                                    <div>
+                                                        <span>Estimated transport</span>
+                                                        <strong>{formatRouteCost(optimizedRoute.summary.estimatedCostInr)}</strong>
+                                                    </div>
+                                                </div>
+                                                <p className="optimized-route-cost-note">{optimizedRoute.summary.estimatedCostNote}</p>
+                                                <h4>Best stop order</h4>
+                                                <ol className="optimized-route-stops">
+                                                    <li><span className="optimized-route-stop-number">S</span><strong>{optimizedRoute.origin}</strong><small>Start</small></li>
+                                                    {optimizedRoute.stops.map((stop) => (
+                                                        <li key={`${stop.order}-${stop.name}`}>
+                                                            <span className="optimized-route-stop-number">{stop.order}</span>
+                                                            <strong>{stop.name}</strong>
+                                                        </li>
+                                                    ))}
+                                                </ol>
+
+                                                <OptimizedRouteMap
+                                                    route={optimizedRoute.route}
+                                                    origin={optimizedRoute.origin}
+                                                    stops={optimizedRoute.stops}
+                                                />
+
+                                                <div className="optimized-route-directions">
+                                                    <div className="optimized-route-directions-heading">
+                                                        <h4>Turn-by-turn directions</h4>
+                                                        <a href={getOpenStreetMapDirectionsUrl(optimizedRoute)} target="_blank" rel="noopener noreferrer">
+                                                            Open in OpenStreetMap
+                                                        </a>
+                                                    </div>
+                                                    {optimizedRoute.route.directions.map((leg, index) => (
+                                                        <details className="optimized-route-leg" key={`${leg.from}-${leg.to}`}>
+                                                            <summary>
+                                                                <span>
+                                                                    <strong>{index + 1}. {leg.to}</strong>
+                                                                    <small>{leg.from} → {leg.to}</small>
+                                                                </span>
+                                                                <span className="optimized-route-leg-metrics">
+                                                                    {formatRouteDistance(leg.distanceMeters)} · {formatRouteDuration(leg.durationSeconds)}
+                                                                </span>
+                                                            </summary>
+                                                            {leg.steps.length > 0 ? (
+                                                                <ol>
+                                                                    {leg.steps.map((step, stepIndex) => (
+                                                                        <li key={`${stepIndex}-${step.instruction}`}>
+                                                                            <span>{step.instruction}</span>
+                                                                            <small>{formatRouteDistance(step.distanceMeters)} · {formatRouteDuration(step.durationSeconds)}</small>
+                                                                        </li>
+                                                                    ))}
+                                                                </ol>
+                                                            ) : (
+                                                                <p className="optimized-route-no-steps">Detailed turn-by-turn steps are unavailable for this leg.</p>
+                                                            )}
+                                                        </details>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </section>
+                                )}
                                 <p className="suggestion-attribution">
                                     {suggestionSource === "wikivoyage" ? (
                                         <>Guide summaries from <a href="https://en.wikivoyage.org/" target="_blank" rel="noreferrer">Wikivoyage</a>.</>
@@ -486,8 +764,8 @@ function Planner() {
 
 
                             <div>
-                                <label>Start date</label>
-                                <input type="date" name="startDate" required />
+                                <label htmlFor="trip-start-date">Start date</label>
+                                <input id="trip-start-date" type="date" name="startDate" required />
                             </div>
 
 
@@ -512,17 +790,23 @@ function Planner() {
                         </h2>
 
 
-                        <label>
-                            Number of travelers
-                        </label>
+                        <label htmlFor="trip-travelers">Number of travelers</label>
 
 
                         <input
                             type="number"
+                            id="trip-travelers"
                             name="travelers"
                             min="1"
                             max="20"
-                            defaultValue="2"
+                            value={travelerCount}
+                            onChange={(event) => {
+                                const nextCount = event.target.value;
+                                setTravelerCount(nextCount);
+                                if (destinationPackage) {
+                                    setBudgetInput(String((Number(destinationPackage.price) || 0) * (Number(nextCount) || 0)));
+                                }
+                            }}
                             required
                         />
 
@@ -553,16 +837,17 @@ function Planner() {
                         <div className="budget-input">
 
                             <span>
-                                ₹
+                                {destinationPackage?.currency || "₹"}
                             </span>
 
 
                             <input
                                 type="number"
                                 name="budget"
-                                min="1000"
                                 placeholder="25000"
                                 value={budgetInput}
+                                readOnly={Boolean(destinationPackage)}
+                                min={destinationPackage ? "0" : "1000"}
                                 onChange={(event) => setBudgetInput(event.target.value)}
                                 required
                             />
@@ -572,7 +857,9 @@ function Planner() {
 
                         <p className="form-hint">
 
-                            Enter your approximate total trip budget.
+                            {destinationPackage
+                                ? "Package total based on the selected price per traveler."
+                                : "Enter your approximate total trip budget."}
 
                         </p>
 
@@ -735,13 +1022,19 @@ function Planner() {
                     <button
                         type="submit"
                         className="generate-btn"
-                        disabled={saving}
+                        disabled={
+                            saving ||
+                            destinationPackageLoading ||
+                            destinationPackage?.bookingDetails?.available === false
+                        }
                     >
 
                         <Sparkles size={20} />
 
 
-                        {saving ? "Generating your itinerary..." : "Generate My Trip"}
+                        {saving
+                            ? destinationPackage ? "Saving your package trip..." : "Generating your itinerary..."
+                            : destinationPackage ? "Continue with this package" : "Generate My Trip"}
 
 
                         {!saving && (

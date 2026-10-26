@@ -19,6 +19,8 @@ function Contact() {
     const navigate = useNavigate();
     const { user } = useAuth();
     const [submitted, setSubmitted] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState("");
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -33,6 +35,8 @@ function Contact() {
 
     const handleChange = (event) => {
         const { name, value } = event.target;
+        setSubmitted(false);
+        setError("");
         setFormData((current) => ({
             ...current,
             [name]: value,
@@ -41,7 +45,9 @@ function Contact() {
 
     async function handleSubmit(event) {
         event.preventDefault();
-
+        setSubmitting(true);
+        setSubmitted(false);
+        setError("");
         try {
             await api.post("/contact", formData);
             setSubmitted(true);
@@ -50,9 +56,11 @@ function Contact() {
                 email: "",
                 query: "",
             });
-        } catch (error) {
+        } catch (requestError) {
             setSubmitted(false);
-            alert(error.response?.data?.message || "Unable to send your message right now.");
+            setError(requestError.response?.data?.message || "Unable to send your message right now.");
+        } finally {
+            setSubmitting(false);
         }
     }
 
@@ -135,6 +143,8 @@ function Contact() {
                             <Send size={22} />
                         </div>
 
+                        {error && <p className="contact-error" role="alert">{error}</p>}
+
                         <label htmlFor="name">Your name</label>
                         <input
                             id="name"
@@ -168,8 +178,8 @@ function Contact() {
                             required
                         />
 
-                        <button type="submit">
-                            {submitted ? "Message sent" : "Send query"}
+                        <button type="submit" disabled={submitting}>
+                            {submitting ? "Sending..." : submitted ? "Message sent" : "Send query"}
                             <ArrowRight size={18} />
                         </button>
 

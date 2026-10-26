@@ -1,18 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-label="Scenic mountain landscape">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-label="Scenic mountain landscape at dusk">
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#9bc9c6"/>
-      <stop offset="1" stop-color="#f0d9aa"/>
+      <stop offset="0" stop-color="#09111d"/>
+      <stop offset=".62" stop-color="#142a3b"/>
+      <stop offset="1" stop-color="#294654"/>
     </linearGradient>
-    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#4f9291"/>
-      <stop offset="1" stop-color="#244f55"/>
+    <linearGradient id="ridge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#263e4b"/>
+      <stop offset="1" stop-color="#101c29"/>
     </linearGradient>
+    <linearGradient id="foreground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#172f3c"/>
+      <stop offset="1" stop-color="#09121d"/>
+    </linearGradient>
+    <radialGradient id="horizon" cx="72%" cy="42%" r="46%">
+      <stop offset="0" stop-color="#d8ba78" stop-opacity=".32"/>
+      <stop offset="1" stop-color="#d8ba78" stop-opacity="0"/>
+    </radialGradient>
   </defs>
   <rect width="960" height="600" fill="url(#sky)"/>
-  <circle cx="720" cy="150" r="64" fill="#f5d69a"/>
-  <path d="M0 390 190 175l138 150 160-205 224 270 118-128 130 140v198H0Z" fill="#54766e"/>
-  <path d="m190 175 64 70-53-18-35 30Zm298-55 87 105-81-30-54 27Z" fill="#f4eee0" opacity=".9"/>
-  <path d="M0 405q180-45 360 0t360 0 240 0v195H0Z" fill="url(#water)"/>
-  <path d="M0 462q180-38 360 0t360 0 240 0" fill="none" stroke="#b7d7c8" stroke-width="8" opacity=".55"/>
+  <rect width="960" height="600" fill="url(#horizon)"/>
+  <g fill="#cbeaf0" opacity=".58">
+    <circle cx="96" cy="96" r="2"/><circle cx="174" cy="152" r="1.5"/>
+    <circle cx="292" cy="76" r="1.5"/><circle cx="386" cy="128" r="2"/>
+    <circle cx="518" cy="72" r="1.5"/><circle cx="840" cy="116" r="2"/>
+    <circle cx="744" cy="68" r="1.2"/><circle cx="912" cy="206" r="1.5"/>
+  </g>
+  <circle cx="720" cy="230" r="54" fill="#d8ba78" opacity=".84"/>
+  <circle cx="720" cy="230" r="86" fill="none" stroke="#d8ba78" stroke-opacity=".2"/>
+  <path d="M0 405 156 235l110 122 170-205 194 242 115-135 215 168v173H0Z" fill="url(#ridge)"/>
+  <path d="m436 152 87 107-82-31-53 34Zm-280 83 62 70-53-17-37 29Zm474 159 56-67 58 73-58-26Z" fill="#d5dfe0" opacity=".72"/>
+  <path d="M0 435q178-58 352 0t356 0 252 1v164H0Z" fill="url(#foreground)"/>
+  <path d="M0 479q180-44 360 0t360 0 240 0" fill="none" stroke="#74e3f3" stroke-width="2" stroke-opacity=".32"/>
+  <path d="M0 511q180-38 360 0t360 0 240 0" fill="none" stroke="#d8ba78" stroke-width="1" stroke-opacity=".22"/>
 </svg>

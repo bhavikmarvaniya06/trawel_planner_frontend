@@ -4,17 +4,20 @@ import {
     MapPin,
     ArrowRight,
     Search,
+    CalendarDays,
+    Wallet,
 } from "lucide-react";
 
 import SiteNavbar from "../components/SiteNavbar";
-import api from "../services/api";
-import destinations, { destinationFallbackImage } from "../data/destinations";
+import api, { getApiResourceUrl } from "../services/api";
+import destinations, { destinationFallbackImage, getDestinationImage } from "../data/destinations";
 import "./Explore.css";
 
 
 function Explore() {
     const [adminDestinations, setAdminDestinations] = useState([]);
     const [catalogError, setCatalogError] = useState("");
+    const [activeImages, setActiveImages] = useState({});
 
     useEffect(() => {
         const loadAdminDestinations = async () => {
@@ -38,7 +41,12 @@ function Explore() {
     const filteredDestinations = [
         ...adminDestinations.map((destination) => ({
             ...destination,
-            image: destination.imageUrl || destinationFallbackImage,
+            image: getDestinationImage(
+                destination.name,
+                destination.images?.[0]?.url
+                    ? getApiResourceUrl(destination.images[0].url)
+                    : destination.imageUrl
+            ),
         })),
         ...destinations.filter(
             (destination) => !adminDestinationNames.has(destination.name.trim().toLowerCase())
@@ -126,7 +134,9 @@ function Explore() {
 
                             <div className="destination-image">
                                 <img
-                                    src={destination.image}
+                                    src={destination.images?.[activeImages[destination._id] || 0]?.url
+                                        ? getApiResourceUrl(destination.images[activeImages[destination._id] || 0].url)
+                                        : destination.image}
                                     alt={destination.name}
                                     loading="lazy"
                                     decoding="async"
@@ -147,6 +157,11 @@ function Explore() {
                                         {destination.imageCredit.label}
                                     </a>
                                 )}
+                                {destination.images?.length > 1 && (
+                                    <div className="destination-image-count" aria-label={`${destination.images.length} photos`}>
+                                        {destination.images.length} photos
+                                    </div>
+                                )}
                             </div>
 
 
@@ -166,14 +181,101 @@ function Explore() {
                                     {destination.description}
                                 </p>
 
+                                {destination.images?.length > 1 && (
+                                    <div className="destination-gallery" aria-label={`${destination.name} photos`}>
+                                        {destination.images.map((image, index) => (
+                                            <button
+                                                type="button"
+                                                key={image._id || image.url}
+                                                className={(activeImages[destination._id] || 0) === index ? "active" : ""}
+                                                onClick={() => {
+                                                    setActiveImages((current) => ({
+                                                        ...current,
+                                                        [destination._id]: index,
+                                                    }));
+                                                }}
+                                                aria-label={`Show ${destination.name} photo ${index + 1}`}
+                                                aria-pressed={(activeImages[destination._id] || 0) === index}
+                                            >
+                                                <img src={getApiResourceUrl(image.url)} alt="" loading="lazy" />
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
 
-                                <Link
-                                    to="/planner"
-                                    className="destination-link"
-                                >
-                                    Plan a trip
-                                    <ArrowRight size={16} />
-                                </Link>
+                                {(destination.durationDays || Number.isFinite(Number(destination.price))) && (
+                                    <div className="destination-package-facts">
+                                        {destination.durationDays > 0 && (
+                                            <span><CalendarDays size={15} /> {destination.durationDays} days</span>
+                                        )}
+                                        {destination.price !== undefined && (
+                                            <span><Wallet size={15} /> {destination.currency || "USD"} {Number(destination.price).toLocaleString()}</span>
+                                        )}
+                                    </div>
+                                )}
+
+                                {destination.itinerary?.length > 0 && (
+                                    <details className="destination-itinerary">
+                                        <summary>View {destination.itinerary.length}-day itinerary</summary>
+                                        <ol>
+                                            {destination.itinerary.map((day) => (
+                                                <li key={day.day}>
+                                                    <strong>Day {day.day}: {day.title}</strong>
+                                                    {day.description && <p>{day.description}</p>}
+                                                    {day.activities?.length > 0 && <span>{day.activities.join(" · ")}</span>}
+                                                </li>
+                                            ))}
+                                        </ol>
+                                    </details>
+                                )}
+
+                                {destination.bookingDetails && (
+                                    <div className="destination-booking-details">
+                                        {destination.bookingDetails.notes && <p>{destination.bookingDetails.notes}</p>}
+                                        {destination.bookingDetails.contactPhone && (
+                                            <a href={`tel:${destination.bookingDetails.contactPhone}`}>
+                                                {destination.bookingDetails.contactPhone}
+                                            </a>
+                                        )}
+                                        {destination.bookingDetails.contactEmail && (
+                                            <a href={`mailto:${destination.bookingDetails.contactEmail}`}>
+                                                {destination.bookingDetails.contactEmail}
+                                            </a>
+                                        )}
+                                        {destination.bookingDetails.bookingUrl && (
+                                            <a href={destination.bookingDetails.bookingUrl} target="_blank" rel="noreferrer">
+                                                Provider booking details
+                                            </a>
+                                        )}
+                                    </div>
+                                )}
+
+                                {destination._id ? (
+                                    <>
+                                        <Link
+                                            to={`/planner?destinationPackageId=${encodeURIComponent(destination._id)}`}
+                                            className={`destination-link${destination.bookingDetails?.available === false ? " is-unavailable" : ""}`}
+                                            aria-disabled={destination.bookingDetails?.available === false}
+                                            onClick={(event) => {
+                                                if (destination.bookingDetails?.available === false) event.preventDefault();
+                                            }}
+                                        >
+                                            {destination.bookingDetails?.available === false ? "Currently unavailable" : "Book Now"}
+                                            {destination.bookingDetails?.available !== false && <ArrowRight size={16} />}
+                                        </Link>
+                                        <small className="destination-booking-note">
+                                            Continues to your TripAI planner and uses your existing trip-credit rules.
+                                        </small>
+                                    </>
+                                ) : (
+                                    <Link
+                                        to={`/planner?destination=${encodeURIComponent(destination.name)}`}
+                                        className="destination-link"
+                                    >
+                                        Plan a trip
+                                        <ArrowRight size={16} />
+                                    </Link>
+                                )}
 
                             </div>
 

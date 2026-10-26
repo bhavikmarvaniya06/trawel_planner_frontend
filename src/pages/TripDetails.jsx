@@ -8,9 +8,16 @@ import {
     MapPin,
     Sparkles,
     Mail,
+    CloudSun,
+    CloudRain,
+    Wind,
+    ThermometerSun,
+    RefreshCw,
+    AlertTriangle,
 } from "lucide-react";
 
 import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import SiteNavbar from "../components/SiteNavbar";
 
 import "./TripDetails.css";
@@ -21,6 +28,7 @@ function TripDetails() {
     const { id } = useParams();
 
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [trip, setTrip] = useState(null);
 
     const [loading, setLoading] = useState(true);
@@ -29,6 +37,13 @@ function TripDetails() {
     const [emailSending, setEmailSending] = useState(false);
     const [emailMessage, setEmailMessage] = useState("");
     const [emailError, setEmailError] = useState("");
+    const [weather, setWeather] = useState(null);
+    const [weatherLoading, setWeatherLoading] = useState(true);
+    const [weatherError, setWeatherError] = useState("");
+
+    const ownerId = typeof trip?.user === "string" ? trip.user : trip?.user?._id;
+    const currentUserId = user?._id || user?.id;
+    const isTripOwner = Boolean(ownerId && currentUserId && String(ownerId) === String(currentUserId));
 
 
     useEffect(() => {
@@ -65,7 +80,51 @@ function TripDetails() {
 
         fetchTrip();
 
+    }, [id, currentUserId]);
+
+    useEffect(() => {
+        let active = true;
+        setWeather(null);
+        setWeatherLoading(true);
+        setWeatherError("");
+        api.get(`/trips/${id}/weather`)
+            .then((response) => {
+                if (active) setWeather(response.data);
+            })
+            .catch((requestError) => {
+                console.error("Unable to load trip weather:", requestError);
+                if (active) {
+                    setWeatherError(
+                        requestError.response?.data?.message ||
+                        "Weather data is temporarily unavailable. Please try again."
+                    );
+                }
+            })
+            .finally(() => {
+                if (active) setWeatherLoading(false);
+            });
+
+        return () => {
+            active = false;
+        };
     }, [id]);
+
+    const handleRefreshWeather = async () => {
+        setWeatherLoading(true);
+        setWeatherError("");
+        try {
+            const response = await api.get(`/trips/${id}/weather`);
+            setWeather(response.data);
+        } catch (requestError) {
+            console.error("Unable to refresh trip weather:", requestError);
+            setWeatherError(
+                requestError.response?.data?.message ||
+                "Weather data is temporarily unavailable. Please try again."
+            );
+        } finally {
+            setWeatherLoading(false);
+        }
+    };
 
     const handleEmailTripPdf = async () => {
         setEmailSending(true);
@@ -85,7 +144,6 @@ function TripDetails() {
         }
     };
 
-
     const formatDate = (date) => {
 
         return new Date(date).toLocaleDateString(
@@ -97,6 +155,38 @@ function TripDetails() {
             }
         );
 
+    };
+
+    const formatWeatherDate = (date) => new Date(`${date}T12:00:00`).toLocaleDateString(
+        "en-IN",
+        { weekday: "short", day: "numeric", month: "short" }
+    );
+
+    const describeWeather = (code) => {
+        const descriptions = {
+            0: "Clear sky",
+            1: "Mainly clear",
+            2: "Partly cloudy",
+            3: "Overcast",
+            45: "Fog",
+            48: "Rime fog",
+            51: "Light drizzle",
+            53: "Drizzle",
+            55: "Heavy drizzle",
+            61: "Light rain",
+            63: "Rain",
+            65: "Heavy rain",
+            71: "Light snow",
+            73: "Snow",
+            75: "Heavy snow",
+            80: "Rain showers",
+            81: "Rain showers",
+            82: "Heavy rain showers",
+            95: "Thunderstorm",
+            96: "Thunderstorm with hail",
+            99: "Thunderstorm with hail",
+        };
+        return descriptions[code] || "Forecast available";
     };
 
 
@@ -170,14 +260,16 @@ function TripDetails() {
 
                 </div>
 
-                <div className="trip-email-action">
-                    <button type="button" onClick={handleEmailTripPdf} disabled={emailSending}>
-                        <Mail size={17} />
-                        {emailSending ? "Sending PDF..." : "Email trip PDF"}
-                    </button>
-                    {emailMessage && <p role="status">{emailMessage}</p>}
-                    {emailError && <p role="alert">{emailError}</p>}
-                </div>
+                {isTripOwner && (
+                    <div className="trip-email-action">
+                        <button type="button" onClick={handleEmailTripPdf} disabled={emailSending}>
+                            <Mail size={17} />
+                            {emailSending ? "Sending PDF..." : "Email trip PDF"}
+                        </button>
+                        {emailMessage && <p role="status">{emailMessage}</p>}
+                        {emailError && <p role="alert">{emailError}</p>}
+                    </div>
+                )}
 
             </section>
 
@@ -290,6 +382,76 @@ function TripDetails() {
 
                 </section>
 
+                <section className="trip-weather-section" aria-label="Trip weather forecast">
+                    <div className="trip-weather-heading">
+                        <div>
+                            <span className="trip-weather-icon"><CloudSun size={22} /></span>
+                            <div>
+                                <p>{weather?.forecastType === "historical" ? "HISTORICAL WEATHER" : "OPEN-METEO FORECAST"}</p>
+                                <h2>Weather in {trip.destination}</h2>
+                                {weather?.weatherLocation && weather.weatherLocation.toLowerCase() !== trip.destination.toLowerCase() && (
+                                    <span className="trip-weather-location">Based on {weather.weatherLocation}</span>
+                                )}
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            className="trip-weather-refresh"
+                            onClick={handleRefreshWeather}
+                            disabled={weatherLoading}
+                        >
+                            <RefreshCw size={16} className={weatherLoading ? "is-spinning" : ""} />
+                            {weatherLoading ? "Checking..." : "Refresh"}
+                        </button>
+                    </div>
+
+                    {weatherError && <p className="trip-weather-error" role="alert">{weatherError}</p>}
+                    {weatherLoading && !weather && <p className="trip-weather-message" role="status">Loading the forecast for your trip...</p>}
+                    {!weatherLoading && !weatherError && weather && !weather.forecastAvailable && (
+                        <p className="trip-weather-message" role="status">{weather.message}</p>
+                    )}
+                    {!weatherLoading && !weatherError && weather?.forecastAvailable && weather.forecast?.length > 0 && (
+                        <>
+                            <div className="trip-weather-grid">
+                                {weather.forecast.map((day) => (
+                                    <article className="trip-weather-day" key={day.date}>
+                                        <div className="trip-weather-day-heading">
+                                            <span>{formatWeatherDate(day.date)}</span>
+                                            {day.conditions?.length > 0 && <AlertTriangle size={17} aria-label="Weather alert" />}
+                                        </div>
+                                        <h3>{describeWeather(day.weatherCode)}</h3>
+                                        <div className="trip-weather-metrics">
+                                            <span><ThermometerSun size={16} /> {day.temperatureMin ?? "—"}° / {day.temperatureMax ?? "—"}°C</span>
+                                            <span>
+                                                <CloudRain size={16} />
+                                                {day.precipitationProbability === null || day.precipitationProbability === undefined
+                                                    ? `${day.precipitation ?? "—"} mm precipitation`
+                                                    : `${day.precipitationProbability}% rain chance`}
+                                            </span>
+                                            <span><Wind size={16} /> {day.windSpeed ?? "—"} km/h</span>
+                                        </div>
+                                        {day.conditions?.length > 0 ? (
+                                            <div className="trip-weather-alert">
+                                                <strong>Plan for {day.conditions.join(", ")}</strong>
+                                                {day.suggestions?.map((suggestion) => (
+                                                    <p key={suggestion}>{suggestion}</p>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="trip-weather-clear">No significant weather risks expected.</p>
+                                        )}
+                                    </article>
+                                ))}
+                            </div>
+                            {weather.forecastThrough && new Date(`${weather.forecastThrough}T00:00:00`) < new Date(trip.endDate) && (
+                                <p className="trip-weather-message">
+                                    Forecasts are currently available through {formatWeatherDate(weather.forecastThrough)}. Check back for the remaining trip days.
+                                </p>
+                            )}
+                        </>
+                    )}
+                </section>
+
 
 
                 {/* AI Section */}
@@ -336,7 +498,7 @@ function TripDetails() {
                                                     {item.location && (
                                                         <a
                                                             className="itinerary-map-link"
-                                                            href={item.mapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}`}
+                                                            href={item.mapsUrl || `https://www.openstreetmap.org/search?query=${encodeURIComponent(item.location)}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                         >

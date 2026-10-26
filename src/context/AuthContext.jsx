@@ -110,6 +110,18 @@ export const AuthProvider = ({ children }) => {
         return response.data;
     };
 
+    const loginWithGoogle = async (idToken) => {
+        const response = await api.post("/auth/google", { idToken });
+
+        const { token, user } = response.data;
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+        setUser(user);
+
+        return response.data;
+    };
+
 
     // Logout
     const logout = () => {
@@ -130,6 +142,7 @@ export const AuthProvider = ({ children }) => {
                 register,
                 requestOtp,
                 loginWithOtp,
+                loginWithGoogle,
                 logout,
             }}
         >

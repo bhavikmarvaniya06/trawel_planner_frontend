@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { AuthProvider, useAuth } from "./AuthContext";
 import api from "../services/api";
 
@@ -11,13 +11,18 @@ jest.mock("../services/api", () => ({
 }));
 
 function TestConsumer() {
-  const { user, loading } = useAuth();
+  const { user, loading, loginWithGoogle } = useAuth();
 
   if (loading) {
     return <div>loading</div>;
   }
 
-  return <div>{user ? user.email : "logged-out"}</div>;
+  return (
+    <>
+      <div>{user ? user.email : "logged-out"}</div>
+      <button onClick={() => loginWithGoogle("google-id-token")}>Continue with Google</button>
+    </>
+  );
 }
 
 describe("AuthContext", () => {
@@ -47,5 +52,35 @@ describe("AuthContext", () => {
     });
 
     expect(localStorage.getItem("token")).toBe("saved-token");
+  });
+
+  it("sends the Google credential to the backend and persists the returned session", async () => {
+    api.get.mockRejectedValue(new Error("Not logged in"));
+    api.post.mockResolvedValue({
+      data: {
+        token: "google-session-token",
+        user: { id: "user-1", email: "google@example.com", role: "user" },
+      },
+    });
+
+    render(
+      <AuthProvider>
+        <TestConsumer />
+      </AuthProvider>
+    );
+
+    fireEvent.click(await screen.findByRole("button", { name: "Continue with Google" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("google@example.com")).toBeInTheDocument();
+    });
+
+    expect(api.post).toHaveBeenCalledWith("/auth/google", { idToken: "google-id-token" });
+    expect(localStorage.getItem("token")).toBe("google-session-token");
+    expect(JSON.parse(localStorage.getItem("user"))).toEqual({
+      id: "user-1",
+      email: "google@example.com",
+      role: "user",
+    });
   });
 });

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { User, Mail, Lock, Sparkles } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
+import GoogleSignInButton from "../components/GoogleSignInButton";
 
 import "./Register.css";
 
@@ -10,7 +11,7 @@ function Register() {
 
     const navigate = useNavigate();
 
-    const { register } = useAuth();
+    const { register, loginWithGoogle } = useAuth();
 
     const [formData, setFormData] = useState({
         name: "",
@@ -60,6 +61,20 @@ function Register() {
 
             setLoading(false);
 
+        }
+    };
+
+    const handleGoogleCredential = async (idToken) => {
+        setError("");
+        setLoading(true);
+
+        try {
+            const response = await loginWithGoogle(idToken);
+            navigate(response.user.role === "admin" ? "/admin" : "/planner", { replace: true });
+        } catch (googleError) {
+            setError(googleError.response?.data?.message || "Google sign-in failed.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -183,6 +198,10 @@ function Register() {
 
                 </form>
 
+                <GoogleSignInButton
+                    onCredential={handleGoogleCredential}
+                    disabled={loading}
+                />
 
                 <p className="auth-footer">
 

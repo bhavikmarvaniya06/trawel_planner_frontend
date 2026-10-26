@@ -354,6 +354,177 @@
     border-radius: 15px;
 }
 
+.trip-weather-section {
+    margin: 30px 0;
+    padding: clamp(18px, 3vw, 28px);
+    border: 1px solid #d8e7e1;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(16, 43, 39, 0.06);
+}
+
+.trip-weather-heading,
+.trip-weather-heading > div {
+    display: flex;
+    align-items: center;
+}
+
+.trip-weather-heading {
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.trip-weather-heading > div {
+    gap: 13px;
+}
+
+.trip-weather-icon {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border-radius: 13px;
+    background: #eaf3ef;
+    color: var(--site-accent-strong);
+}
+
+.trip-weather-heading p {
+    margin: 0 0 4px;
+    color: var(--site-accent);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.trip-weather-heading h2 {
+    margin: 0;
+    color: #172033;
+    font-size: clamp(20px, 3vw, 26px);
+}
+
+.trip-weather-location {
+    display: block;
+    margin-top: 4px;
+    color: #667085;
+    font-size: 12px;
+}
+
+.trip-weather-refresh {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid #cbded9;
+    border-radius: 8px;
+    background: #fff;
+    color: var(--site-accent-strong);
+    font-weight: 700;
+}
+
+.trip-weather-refresh:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.trip-weather-refresh .is-spinning {
+    animation: weather-spin 1s linear infinite;
+}
+
+@keyframes weather-spin {
+    to { transform: rotate(360deg); }
+}
+
+.trip-weather-message,
+.trip-weather-error {
+    margin: 14px 0 0;
+    color: #667085;
+    line-height: 1.6;
+}
+
+.trip-weather-error {
+    color: #b42318;
+}
+
+.trip-weather-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+    gap: 14px;
+}
+
+.trip-weather-day {
+    min-width: 0;
+    padding: 17px;
+    border: 1px solid #e4e7ec;
+    border-radius: 12px;
+    background: #fbfdfc;
+}
+
+.trip-weather-day-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: #475467;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.trip-weather-day-heading svg {
+    color: #b54708;
+}
+
+.trip-weather-day h3 {
+    margin: 11px 0;
+    color: #172033;
+    font-size: 18px;
+}
+
+.trip-weather-metrics {
+    display: grid;
+    gap: 8px;
+    color: #475467;
+    font-size: 13px;
+}
+
+.trip-weather-metrics span {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.trip-weather-metrics svg {
+    flex: 0 0 auto;
+    color: var(--site-accent);
+}
+
+.trip-weather-alert {
+    margin-top: 14px;
+    padding: 11px;
+    border-radius: 9px;
+    background: #fff4e5;
+    color: #7a2e0e;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.trip-weather-alert strong {
+    display: block;
+    text-transform: capitalize;
+}
+
+.trip-weather-alert p {
+    margin: 7px 0 0;
+}
+
+.trip-weather-clear {
+    margin: 14px 0 0;
+    color: #667085;
+    font-size: 13px;
+}
+
 .itinerary-section {
     display: grid;
     gap: 16px;
@@ -591,6 +762,11 @@
 
 
 @media (max-width: 550px) {
+
+    .trip-weather-heading {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
 
     .trip-details-navbar {
         padding: 0 20px;

@@ -279,4 +279,45 @@ const destinations = [
     },
 ];
 
+const destinationImageByName = new Map(
+    destinations.flatMap((destination) =>
+        [destination.name, ...(destination.aliases || [])].map((name) => [
+            name.trim().toLowerCase(),
+            destination.image,
+        ])
+    )
+);
+const additionalDestinationImages = new Map([
+    ["mumbai", imageUrl("photo-1570168007204-dfb528c6958f")],
+    ["rishikesh", imageUrl("photo-1626621341517-bbf3d9990a23")],
+    ["mysuru", imageUrl("photo-1599661046827-dacff0c0f09a")],
+    ["varkala", imageUrl("photo-1512343879784-a960bf40e7f2")],
+    ["darjeeling", imageUrl("photo-1597074866923-dc0589150358")],
+    ["kathmandu", imageUrl("photo-1544735716-392fe2489ffa")],
+]);
+const destinationImagePool = destinations.map((destination) => destination.image);
+
+export const getDestinationImage = (destinationName, preferredImage) => {
+    if (typeof preferredImage === "string" && preferredImage.trim()) {
+        return preferredImage.trim();
+    }
+
+    const normalizedName = String(destinationName || "")
+        .split(",")[0]
+        .trim()
+        .toLowerCase();
+
+    const knownImage =
+        destinationImageByName.get(normalizedName) ||
+        additionalDestinationImages.get(normalizedName);
+    if (knownImage) return knownImage;
+
+    const imageIndex = Array.from(normalizedName).reduce(
+        (total, character) => total + character.codePointAt(0),
+        0
+    ) % destinationImagePool.length;
+
+    return destinationImagePool[imageIndex] || destinationFallbackImage;
+};
+
 export default destinations;

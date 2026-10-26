@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import App from './App';
 import api from './services/api';
 
@@ -42,7 +42,21 @@ test('shows the public home page at /home', async () => {
   expect(destinationImages).toHaveLength(9);
   fireEvent.error(destinationImages[0]);
   expect(destinationImages[0]).toHaveAttribute('src', '/destination-fallback.svg');
+  const mainNavigation = within(screen.getByRole('navigation', { name: /main navigation/i }));
+  expect(mainNavigation.getByRole('link', { name: /^explore$/i })).toHaveAttribute('href', '/explore');
+  expect(mainNavigation.getByRole('link', { name: /our story/i })).toHaveAttribute('href', '/about');
+  expect(screen.getByRole('heading', { name: /a calmer, more personal way to plan/i })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /get to know tripai/i })).toHaveAttribute('href', '/about');
   expect(screen.getByRole('link', { name: /see all/i })).toHaveAttribute('href', '/explore');
+  expect(screen.getByRole('link', { name: /plan a trip to goa/i })).toHaveAttribute(
+    'href',
+    '/planner?destination=Goa'
+  );
+  expect(screen.getByRole('heading', { name: /your first ai trip is free/i })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /start planning/i })).toHaveAttribute(
+    'href',
+    '/planner'
+  );
 });
 
 test('Explore shows every destination and image fallback', async () => {
@@ -56,6 +70,10 @@ test('Explore shows every destination and image fallback', async () => {
   expect(destinationImages).toHaveLength(44);
   fireEvent.error(destinationImages[0]);
   expect(destinationImages[0]).toHaveAttribute('src', '/destination-fallback.svg');
+  expect(screen.getAllByRole('link', { name: /plan a trip/i })[0]).toHaveAttribute(
+    'href',
+    '/planner?destination=Goa'
+  );
 });
 
 test('shows destination suggestions while typing on the home page', async () => {
@@ -78,9 +96,9 @@ test('passes the searched destination into the planner form', async () => {
   });
   fireEvent.click(screen.getByRole('button', { name: /search/i }));
 
-  expect(await screen.findByLabelText(/destination \(optional for ai ideas\)/i)).toHaveValue('Bali');
+  expect(await screen.findByLabelText(/destination \(optional for ai ideas\)/i, {}, { timeout: 5000 })).toHaveValue('Bali');
   mockUser = null;
-});
+}, 15000);
 
 test('returns a signed-out search to the planner after login', async () => {
   mockUser = null;

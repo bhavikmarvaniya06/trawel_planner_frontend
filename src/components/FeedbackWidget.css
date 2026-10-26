@@ -1,461 +1,418 @@
-.feedback-widget {
-    position: fixed;
-    right: 24px;
-    bottom: 24px;
-    z-index: 30;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 14px;
-    font-family: inherit;
+/* ============================================================
+   FeedbackWidget.css — Luxury Animated UI
+   TripAI Travel Planner
+   ============================================================ */
+
+/* ── Keyframes ─────────────────────────────────────────────── */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
+/* ── Widget Wrapper ─────────────────────────────────────────── */
+.feedback-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+/* ── Launcher Button ────────────────────────────────────────── */
 .feedback-launcher {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    min-height: 48px;
-    padding: 0 18px;
-    border: 1px solid #173e42;
-    border-radius: 999px;
-    background: #173e42;
-    color: #fff;
-    box-shadow: 0 8px 26px rgba(18, 45, 47, .24);
-    font: inherit;
-    font-size: .9rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 28px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #d4af37;
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(212, 175, 55, 0.15);
 }
 
 .feedback-launcher:hover {
-    transform: translateY(-2px);
-    background: #24575a;
-    box-shadow: 0 11px 30px rgba(18, 45, 47, .3);
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.4);
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(212, 175, 55, 0.25);
 }
 
 .feedback-launcher.is-open {
-    min-width: 98px;
-    justify-content: center;
-    background: #fff;
-    color: #173e42;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(239, 68, 68, 0.15);
 }
 
+/* ── Panel ──────────────────────────────────────────────────── */
 .feedback-panel {
-    width: min(400px, calc(100vw - 32px));
-    max-height: min(680px, calc(100vh - 112px));
-    min-height: 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    border: 1px solid #dce5e2;
-    border-radius: 14px;
-    background: #fff;
-    color: #203336;
-    box-shadow: 0 22px 64px rgba(16, 39, 41, .2);
-    animation: feedback-panel-in .22s ease-out both;
+  width: min(360px, calc(100vw - 32px));
+  background: rgba(17, 24, 39, 0.97);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(212, 175, 55, 0.08);
+  animation: slideInLeft 0.3s ease both;
 }
 
+/* ── Panel Header ───────────────────────────────────────────── */
 .feedback-panel-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 22px 22px 18px;
-    background: #f3f7f5;
-    border-bottom: 1px solid #e3ebe8;
+  padding: 20px 22px 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .feedback-eyebrow {
-    color: #b15739;
-    font-size: .65rem;
-    font-weight: 800;
-    letter-spacing: .12em;
+  color: #d4af37;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0 0 5px;
 }
 
 .feedback-panel-top h2 {
-    margin: 7px 0 0;
-    color: #173e42;
-    font-size: 1.24rem;
-    line-height: 1.25;
-    overflow-wrap: anywhere;
-}
-
-.feedback-panel-top > div {
-    min-width: 0;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
 }
 
 .feedback-close {
-    display: grid;
-    flex: 0 0 34px;
-    width: 34px;
-    height: 34px;
-    place-items: center;
-    border: 1px solid #d8e2df;
-    border-radius: 50%;
-    background: #fff;
-    color: #456064;
-    cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
-.feedback-form {
-    display: grid;
-    gap: 14px;
-    padding: 18px 22px 20px;
+.feedback-close:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
 }
 
+/* ── Progress Indicator ─────────────────────────────────────── */
 .feedback-progress {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 15px 22px 0;
-    color: #9aa7a4;
-    font-size: .68rem;
-    font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.feedback-progress > span {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
+.feedback-progress span {
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+  transition: color 0.2s ease;
 }
 
-.feedback-progress > span.is-current,
-.feedback-progress > span.is-complete {
-    color: #276a60;
+.feedback-progress span span {
+  display: inline;
+  margin-left: 4px;
 }
 
-.feedback-progress > span > span {
-    font-weight: 600;
+.feedback-progress .is-current > span {
+  color: #ffffff;
+}
+
+.feedback-progress .is-complete > span {
+  color: #0d9488;
 }
 
 .feedback-progress i {
-    height: 1px;
-    flex: 1;
-    background: #e1e8e5;
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  font-style: normal;
+  display: block;
 }
 
+/* ── Rating Step ────────────────────────────────────────────── */
 .feedback-rating-step {
-    padding: 25px 22px 22px;
+  display: flex;
+  flex-direction: column;
 }
 
+/* ── Emoji Rating ───────────────────────────────────────────── */
 .feedback-emojis {
-    display: flex;
-    justify-content: center;
-    gap: clamp(7px, 2vw, 14px);
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 18px 22px 0;
 }
 
 .feedback-emoji {
-    display: grid;
-    flex: 1 1 0;
-    max-width: 62px;
-    aspect-ratio: 1;
-    place-items: center;
-    padding: 0;
-    border: 1px solid #f0e1bf;
-    border-radius: 12px;
-    background: #fff8e8;
-    color: #283536;
-    cursor: pointer;
-    transition: transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease;
-}
-
-.feedback-emoji > span {
-    font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
-    font-size: 1.8rem;
-    line-height: 1;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
 }
 
 .feedback-emoji:hover {
-    transform: translateY(-2px);
-    border-color: #dfb86c;
+  border-color: rgba(212, 175, 55, 0.3);
+  background: rgba(212, 175, 55, 0.08);
+  transform: scale(1.1);
 }
 
 .feedback-emoji.is-selected {
-    transform: translateY(-2px);
-    border-color: #c9873d;
-    background: #ffedc3;
-    box-shadow: 0 0 0 3px rgba(201, 135, 61, .14);
+  border-color: rgba(212, 175, 55, 0.5);
+  background: rgba(212, 175, 55, 0.12);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+  transform: scale(1.12);
 }
 
-.feedback-emoji:focus-visible,
-.feedback-close:focus-visible,
-.feedback-launcher:focus-visible,
-.feedback-submit:focus-visible,
-.feedback-back:focus-visible {
-    outline: 2px solid #4e8580;
-    outline-offset: 3px;
-}
-
+/* ── Rating Labels ──────────────────────────────────────────── */
 .feedback-rating-labels {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 12px;
-    color: #74827f;
-    font-size: .82rem;
-    font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 22px;
+  color: #475569;
+  font-size: 11px;
 }
 
+/* ── Rating Footer ──────────────────────────────────────────── */
 .feedback-rating-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 22px 20px;
+  gap: 12px;
 }
 
 .feedback-rating-footer p {
-    margin: 0;
-    color: #74827f;
-    font-size: .8rem;
+  color: #94a3b8;
+  font-size: 13px;
+  margin: 0;
 }
 
-.feedback-rating {
-    min-width: 0;
-    padding: 0;
-    border: 0;
+/* ── Primary Submit Button ──────────────────────────────────── */
+.feedback-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #d4af37, #0d9488);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.2);
 }
 
-.feedback-rating legend,
-.feedback-field > span {
-    margin-bottom: 7px;
-    color: #364d50;
-    font-size: .78rem;
-    font-weight: 700;
+.feedback-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(212, 175, 55, 0.32);
 }
 
-.feedback-stars {
-    display: flex;
-    gap: 5px;
+.feedback-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.feedback-stars button {
-    display: grid;
-    width: 36px;
-    height: 36px;
-    place-items: center;
-    padding: 0;
-    border: 0;
-    border-radius: 7px;
-    background: transparent;
-    color: #cbd4d1;
-    cursor: pointer;
-    transition: color .15s ease, transform .15s ease;
+/* ── Back Button ────────────────────────────────────────────── */
+.feedback-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.feedback-stars button:hover,
-.feedback-stars button.is-selected {
-    color: #d08b42;
+.feedback-back:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #f1f5f9;
 }
 
-.feedback-stars button:hover {
-    transform: translateY(-2px);
+/* ── Step 2 Form ────────────────────────────────────────────── */
+.feedback-form {
+  padding: 16px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .feedback-field {
-    display: grid;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.feedback-field > span {
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .feedback-field input,
 .feedback-field textarea {
-    width: 100%;
-    box-sizing: border-box;
-    border: 1px solid #d8e2df;
-    border-radius: 7px;
-    background: #fff;
-    color: #203336;
-    padding: 10px 11px;
-    font: inherit;
-    font-size: .86rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #ffffff;
+  font-size: 13px;
+  font-family: inherit;
 }
 
 .feedback-field textarea {
-    min-height: 82px;
-    resize: vertical;
+  resize: vertical;
+  min-height: 90px;
 }
 
 .feedback-field input:focus,
 .feedback-field textarea:focus {
-    outline: 2px solid #4e8580;
-    outline-offset: 1px;
-    border-color: transparent;
+  border-color: rgba(212, 175, 55, 0.3);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.08);
 }
 
 .feedback-field input::placeholder,
 .feedback-field textarea::placeholder {
-    color: #91a09e;
+  color: #475569;
 }
 
+/* ── Form Footer ────────────────────────────────────────────── */
 .feedback-form-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    min-height: 16px;
-    margin-top: -9px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .feedback-error {
-    margin: 0;
-    color: #a43d2b;
-    font-size: .78rem;
+  color: #fca5a5;
+  font-size: 12px;
 }
 
 .feedback-count {
-    margin-left: auto;
-    color: #83928f;
-    font-size: .72rem;
+  color: #475569;
+  font-size: 11px;
+  margin-left: auto;
 }
 
-.feedback-submit {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: auto;
-    min-width: 126px;
-    min-height: 44px;
-    padding: 0 14px;
-    border: 0;
-    border-radius: 7px;
-    background: #173e42;
-    color: #fff;
-    font: inherit;
-    font-size: .88rem;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.feedback-submit:hover:not(:disabled) {
-    background: #24575a;
-}
-
-.feedback-submit:disabled {
-    cursor: wait;
-    opacity: .7;
-}
-
+/* ── Step Action Row ────────────────────────────────────────── */
 .feedback-step-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
-.feedback-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    min-height: 42px;
-    padding: 0 8px;
-    border: 0;
-    background: transparent;
-    color: #536a6c;
-    font: inherit;
-    font-size: .85rem;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.feedback-privacy {
-    margin: -5px 0 0;
-    color: #82918f;
-    font-size: .72rem;
-    text-align: center;
-}
-
+/* ── Success State ──────────────────────────────────────────── */
 .feedback-success {
-    display: grid;
-    justify-items: center;
-    padding: 30px 24px 26px;
-    text-align: center;
+  padding: 32px 22px 28px;
+  text-align: center;
 }
 
 .feedback-success-icon {
-    display: grid;
-    width: 48px;
-    height: 48px;
-    place-items: center;
-    border-radius: 50%;
-    background: #e5f1ea;
-    color: #307556;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
 }
 
 .feedback-success h3 {
-    margin: 16px 0 6px;
-    color: #173e42;
-    font-size: 1.05rem;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 8px;
 }
 
 .feedback-success p {
-    margin: 0;
-    color: #71817f;
-    font-size: .88rem;
+  color: #94a3b8;
+  font-size: 14px;
+  margin: 0 0 18px;
 }
 
 .feedback-success button {
-    margin-top: 20px;
-    padding: 9px 22px;
-    border: 1px solid #173e42;
-    border-radius: 6px;
-    background: #173e42;
-    color: #fff;
-    font: inherit;
-    font-size: .84rem;
-    font-weight: 700;
-    cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #d4af37, #0d9488);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.2);
 }
 
-@keyframes feedback-panel-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.feedback-success button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(212, 175, 55, 0.32);
 }
 
-@media (max-width: 520px) {
-    .feedback-widget {
-        left: 14px;
-        right: 14px;
-        bottom: 14px;
-        gap: 10px;
-        align-items: stretch;
-    }
-
-    .feedback-launcher {
-        min-height: 46px;
-        padding: 0 15px;
-    }
-
-    .feedback-panel {
-        width: 100%;
-        box-sizing: border-box;
-        max-height: calc(100dvh - 112px);
-    }
-
-    .feedback-panel-top {
-        padding: 18px 18px 15px;
-    }
-
-    .feedback-panel-top h2 {
-        font-size: 1.12rem;
-    }
-
-    .feedback-progress {
-        padding: 13px 18px 0;
-    }
-
-    .feedback-rating-step {
-        padding: 22px 18px 18px;
-    }
-
-    .feedback-emoji > span {
-        font-size: 1.55rem;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .feedback-panel,
-    .feedback-launcher,
-    .feedback-emoji {
-        animation: none;
-        transition: none;
-    }
+/* ── Privacy Notice ─────────────────────────────────────────── */
+.feedback-privacy {
+  color: #475569;
+  font-size: 11px;
+  text-align: center;
+  margin: 8px 0 0;
 }

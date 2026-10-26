@@ -5,6 +5,9 @@ import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
 
 import "./index.css";
+import "./LuxuryTheme.css";
+import "./DesignRefinements.css";
+import "./UltraLuxury.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

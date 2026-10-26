@@ -1,17 +1,17 @@
 :root {
     --site-navbar-height: 76px;
     --site-nav-padding: 7%;
-    --site-bg: #ffffff;
-    --site-bg-soft: #edf4f1;
-    --site-border: rgba(28, 68, 59, 0.14);
-    --site-text: #17312c;
-    --site-muted: #5d716b;
-    --site-accent: #147466;
-    --site-accent-strong: #0c594f;
-    --site-accent-soft: rgba(20, 116, 102, 0.12);
-    --site-button-bg: #edf4f1;
-    --site-button-border: rgba(28, 68, 59, 0.2);
-    --site-shadow: 0 20px 50px rgba(17, 48, 42, 0.12);
+    --site-bg: #F7F4ED;
+    --site-bg-soft: #DCE7DF;
+    --site-border: rgba(18, 59, 58, 0.16);
+    --site-text: #123B3A;
+    --site-muted: #526966;
+    --site-accent: #C6A45C;
+    --site-accent-strong: #123B3A;
+    --site-accent-soft: rgba(198, 164, 92, 0.14);
+    --site-button-bg: #FFFFFF;
+    --site-button-border: rgba(18, 59, 58, 0.2);
+    --site-shadow: 0 18px 48px rgba(18, 59, 58, 0.12);
 }
 
 * {
@@ -25,7 +25,7 @@ html {
 body {
     margin: 0;
     font-family: "Segoe UI", "Inter", Arial, sans-serif;
-    background: #f4f7f5;
+    background: var(--site-bg);
     color: var(--site-text);
     line-height: 1.5;
 }
@@ -46,7 +46,7 @@ img {
 }
 
 ::selection {
-    background: rgba(20, 116, 102, 0.18);
+    background: rgba(198, 164, 92, 0.24);
 }
 
 .navbar,

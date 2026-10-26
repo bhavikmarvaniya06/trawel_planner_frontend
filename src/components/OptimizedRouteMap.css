@@ -1,0 +1,74 @@
+.optimized-route-map-wrap {
+    margin-top: 18px;
+}
+
+.optimized-route-map {
+    width: 100%;
+    height: 370px;
+    overflow: hidden;
+    border: 1px solid #d0d5dd;
+    border-radius: 12px;
+    background: #e8f0ed;
+    isolation: isolate;
+    z-index: 0;
+}
+
+.optimized-route-map-marker-icon {
+    border: 0;
+    background: transparent;
+}
+
+.optimized-route-map-marker-icon span {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    background: #147466;
+    box-shadow: 0 2px 8px rgba(16, 24, 40, 0.35);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.optimized-route-map-attribution {
+    margin: 6px 0 0;
+    color: #667085;
+    font-size: 10px;
+    text-align: right;
+}
+
+.optimized-route-map-attribution a {
+    color: #475467;
+}
+
+.optimized-route-map-notice,
+.optimized-route-map-error {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 16px 0 0;
+    padding: 13px 15px;
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+    background: #f8faf9;
+    color: #475467;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.optimized-route-map-notice strong {
+    color: #172033;
+    font-size: 13px;
+}
+
+.optimized-route-map-error {
+    color: #b42318;
+}
+
+@media (max-width: 650px) {
+    .optimized-route-map {
+        height: 280px;
+    }
+}

@@ -1,0 +1,448 @@
+:root {
+    --site-navbar-height: 72px;
+    --site-nav-padding: clamp(20px, 5.5vw, 88px);
+    --site-bg: #F7F4ED;
+    --site-bg-soft: #DCE7DF;
+    --site-border: rgba(18, 59, 58, 0.16);
+    --site-text: #123B3A;
+    --site-muted: #526966;
+    --site-accent: #C6A45C;
+    --site-accent-strong: #123B3A;
+    --site-accent-soft: rgba(198, 164, 92, 0.14);
+    --site-button-bg: #FFFFFF;
+    --site-button-border: rgba(18, 59, 58, 0.2);
+    --site-shadow: 0 18px 48px rgba(18, 59, 58, 0.12);
+    --site-coral: #C6A45C;
+    --site-radius: 14px;
+    --site-radius-sm: 9px;
+    --site-space-section: clamp(48px, 7vw, 88px);
+}
+
+html {
+    scroll-padding-top: calc(var(--site-navbar-height) + 12px);
+}
+
+body {
+    overflow-x: hidden;
+    background-color: var(--site-bg);
+    color: var(--site-text);
+    font-family: "DM Sans", "Segoe UI", Arial, sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button,
+input,
+select,
+textarea,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:not(:disabled) {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
+
+img {
+    max-width: 100%;
+}
+
+.site-header {
+    background: rgba(251, 248, 241, 0.96);
+}
+
+.site-navbar {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.site-footer {
+    color: #f7f4eb;
+}
+
+.site-footer a:focus-visible,
+.site-footer button:focus-visible {
+    outline-color: #e5c38e;
+}
+
+.site-footer-links a,
+.site-footer-meta a {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.home,
+.about-page,
+.explore-page,
+.contact-page,
+.legal-page,
+.planner-page,
+.trip-details-page,
+.dashboard-page,
+.admin-page {
+    background-color: #f5f2e9;
+    color: var(--site-text);
+}
+
+.home .hero {
+    min-height: min(690px, calc(100svh - var(--site-navbar-height)));
+}
+
+.home .destinations,
+.home .features,
+.about-page .about-mission,
+.about-page .about-features,
+.explore-page .destinations-section,
+.planner-page .planner-container,
+.dashboard-page .dashboard-stats,
+.dashboard-page .trips-section,
+.dashboard-page .quick-section,
+.dashboard-page .payment-history-section,
+.admin-page .admin-container,
+.trip-details-page .trip-details-container,
+.contact-page .contact-content,
+.legal-page .legal-content {
+    width: 100%;
+    max-width: 1440px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.home .section-heading,
+.home .section-title,
+.explore-page .section-heading,
+.dashboard-page .section-heading {
+    align-items: end;
+    gap: 18px;
+}
+
+.home .destination-grid,
+.explore-page .destination-grid,
+.home .feature-grid {
+    align-items: stretch;
+}
+
+.home .destination-card,
+.explore-page .destination-card,
+.home .feature-card,
+.about-page .about-feature,
+.contact-page .contact-form,
+.planner-page .planner-form,
+.planner-page .planner-side-card,
+.dashboard-page .stat-card,
+.dashboard-page .trip-card,
+.dashboard-page .payment-history,
+.recommendations-section,
+.group-invitations-section,
+.weather-updates-section,
+.trip-details-page .trip-weather-section,
+.trip-details-page .trip-info-card,
+.trip-details-page .trip-preferences,
+.trip-details-page .itinerary-day,
+.admin-page .admin-sidebar,
+.admin-page .admin-stats > div,
+.admin-page .admin-section,
+.admin-page .admin-edit-modal,
+.auth-card,
+.feedback-widget .feedback-panel {
+    border-radius: var(--site-radius);
+}
+
+.home .destination-card,
+.explore-page .destination-card {
+    overflow: hidden;
+}
+
+.home .feature-card,
+.about-page .about-feature,
+.dashboard-page .stat-card,
+.dashboard-page .trip-card,
+.trip-details-page .trip-info-card,
+.trip-details-page .trip-preferences,
+.trip-details-page .itinerary-day,
+.trip-details-page .trip-weather-section {
+    box-shadow: 0 10px 28px rgba(37, 43, 34, 0.07);
+}
+
+.home .destination-card:focus-visible,
+.explore-page .destination-card:focus-visible {
+    outline: 3px solid rgba(181, 138, 75, 0.7);
+    outline-offset: 4px;
+}
+
+.home .home-about {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.6fr);
+    align-items: center;
+    gap: clamp(28px, 6vw, 88px);
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: var(--site-space-section) max(var(--site-nav-padding), 20px);
+    background: #f2eee4;
+}
+
+.home-about-copy {
+    max-width: 740px;
+}
+
+.home-about-copy > span {
+    color: var(--site-coral);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+}
+
+.home-about-copy h2 {
+    margin: 12px 0;
+    color: var(--site-text);
+    font-size: clamp(30px, 4vw, 48px);
+    line-height: 1.08;
+}
+
+.home-about-copy p {
+    max-width: 650px;
+    color: var(--site-muted);
+    line-height: 1.8;
+}
+
+.home-about-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin-top: 8px;
+    color: var(--site-accent-strong);
+    font-weight: 700;
+}
+
+.home-about-note {
+    display: grid;
+    justify-items: start;
+    gap: 14px;
+    padding: 28px;
+    border: 1px solid var(--site-border);
+    border-radius: var(--site-radius);
+    background: rgba(255, 253, 248, 0.78);
+    color: var(--site-coral);
+}
+
+.home-about-note p {
+    margin: 0;
+    color: var(--site-text);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 27px;
+    line-height: 1.15;
+}
+
+.dashboard-page .recommendations-section,
+.dashboard-page .group-invitations-section,
+.dashboard-page .weather-updates-section {
+    width: calc(100% - 2 * var(--site-nav-padding));
+    max-width: 1440px;
+    margin: 26px auto;
+    padding: clamp(18px, 3vw, 28px);
+    background: #fbf8f1;
+    border: 1px solid var(--site-border);
+    box-shadow: 0 10px 28px rgba(37, 43, 34, 0.06);
+}
+
+.dashboard-page .recommendations-heading h2,
+.dashboard-page .group-invitations-section h2,
+.dashboard-page .weather-updates-heading h2 {
+    color: var(--site-text);
+}
+
+.dashboard-page .recommendations-heading > div > p,
+.dashboard-page .group-invitations-section > div > p,
+.dashboard-page .weather-updates-heading p {
+    color: var(--site-coral);
+}
+
+.dashboard-page .recommendation-card,
+.dashboard-page .group-invitation-card,
+.dashboard-page .weather-update-card {
+    border-radius: var(--site-radius-sm);
+    border-color: var(--site-border);
+    background: #fffdf8;
+}
+
+.dashboard-page .recommendation-card h3,
+.dashboard-page .weather-update-copy h3,
+.dashboard-page .group-invitation-card strong {
+    color: var(--site-text);
+}
+
+.dashboard-page .recommendation-card > .recommendation-reason,
+.dashboard-page .recommendation-meta span:first-child,
+.dashboard-page .weather-update-meta span:first-child {
+    color: var(--site-accent);
+}
+
+.dashboard-page .recommendation-card > .recommendation-plan,
+.dashboard-page .recommendation-filters button,
+.dashboard-page .group-invitation-card button,
+.dashboard-page .weather-update-actions button {
+    border-radius: var(--site-radius-sm);
+    background: var(--site-accent-strong);
+    color: #fff;
+}
+
+.dashboard-page .recommendation-filters input,
+.dashboard-page .recommendation-card-top button,
+.dashboard-page .weather-update-actions .weather-acknowledge {
+    border-radius: var(--site-radius-sm);
+    color: var(--site-text);
+    background: #fff;
+    border-color: var(--site-border);
+}
+
+.recommendation-filters input {
+    min-height: 42px;
+    border-radius: var(--site-radius-sm);
+    border-color: var(--site-border);
+    background: #fffdf8;
+}
+
+.recommendation-filters input:focus {
+    border-color: var(--site-accent);
+    outline: 3px solid rgba(80, 107, 86, 0.14);
+}
+
+.admin-page .admin-table-wrap,
+.admin-page .admin-table-container,
+.admin-page .admin-table-scroll,
+.dashboard-page .payment-history-table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+}
+
+.admin-page .admin-main-panel {
+    min-width: 0;
+}
+
+.admin-page .admin-table {
+    min-width: 720px;
+}
+
+.admin-page .admin-table th,
+.admin-page .admin-table td {
+    vertical-align: middle;
+}
+
+.auth-page {
+    padding: clamp(16px, 4vw, 36px);
+}
+
+.auth-card {
+    width: min(100%, 460px);
+}
+
+button,
+.site-signup-btn,
+.home .search-btn,
+.home .ai-planner-btn,
+.home .ai-content button,
+.planner-page .suggestions-trigger,
+.planner-page .suggestion-use,
+.planner-page .generate-btn,
+.contact-page .contact-form button,
+.admin-page .edit-save-button,
+.feedback-widget .feedback-submit {
+    min-height: 42px;
+}
+
+@media (max-width: 760px) {
+    .site-navbar {
+        padding-inline: 20px;
+    }
+
+    .home .home-about {
+        grid-template-columns: 1fr;
+        padding: 52px 22px;
+    }
+
+    .home-about-note {
+        max-width: 440px;
+    }
+
+    .dashboard-page .recommendations-section,
+    .dashboard-page .group-invitations-section,
+    .dashboard-page .weather-updates-section {
+        width: calc(100% - 32px);
+        margin: 18px auto;
+    }
+
+    .dashboard-page .recommendations-heading {
+        align-items: flex-start;
+    }
+
+    .dashboard-page .recommendation-filters {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 100px auto;
+        align-items: end;
+    }
+
+    .dashboard-page .recommendation-filters label,
+    .dashboard-page .recommendation-filters input {
+        width: 100%;
+    }
+
+    .dashboard-page .weather-update-card {
+        flex-direction: column;
+    }
+
+    .dashboard-page .weather-update-actions {
+        align-items: center;
+        flex-direction: row;
+    }
+
+}
+
+@media (max-width: 480px) {
+    .home .hero h1 {
+        font-size: clamp(36px, 11vw, 44px);
+    }
+
+    .home .search-field,
+    .home .search-btn {
+        width: 100%;
+    }
+
+    .dashboard-page .recommendation-filters {
+        grid-template-columns: 1fr 84px;
+    }
+
+    .dashboard-page .recommendation-filters button {
+        grid-column: 1 / -1;
+    }
+
+    .group-planning-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

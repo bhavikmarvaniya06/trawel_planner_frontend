@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { MapPin, Search, Sparkles, ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import destinations, { destinationFallbackImage } from "../data/destinations";
+import SiteNavbar from "../components/SiteNavbar";
 import "./Home.css";
 
 function Home() {
     const navigate = useNavigate();
-    const { user, logout } = useAuth();
     const [location, setLocation] = useState("");
     const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -18,11 +17,6 @@ function Home() {
                 .includes(location.trim().toLowerCase())
         )
         : [];
-
-    const handleLogout = () => {
-        logout();
-        navigate("/login");
-    };
 
     const handleSearch = (event) => {
         event.preventDefault();
@@ -35,37 +29,7 @@ function Home() {
     return (
         <div className="home">
 
-            <nav className="navbar">
-                <div className="logo">
-                    <span>✈</span> TripAI
-                </div>
-
-                <div className="nav-links">
-                    <Link to="/home">Home</Link>
-                    <Link to="/explore">Explore</Link>
-                    <Link to="/about">About</Link>
-                    <Link to="/planner">AI Planner</Link>
-                    {user && <Link to="/contact">Contact</Link>}
-                </div>
-
-                <div className="nav-actions">
-                    {user ? (
-                        <button onClick={handleLogout} className="login-btn" type="button">
-                            Logout
-                        </button>
-                    ) : (
-                        <>
-                            <Link to="/login" className="login-btn">
-                                Login
-                            </Link>
-
-                            <Link to="/register" className="signup-btn">
-                                Sign Up
-                            </Link>
-                        </>
-                    )}
-                </div>
-            </nav>
+            <SiteNavbar />
 
             <section className="hero">
                 <div className="hero-overlay"></div>
@@ -223,33 +187,51 @@ function Home() {
                 </div>
             </section>
 
-            <footer>
-                <div className="footer-logo">
-                    ✈ TripAI
+            <section className="home-about">
+                <div className="home-about-copy">
+                    <span>TRAVEL, MADE THOUGHTFUL</span>
+                    <h2>A calmer, more personal way to plan your next journey.</h2>
+                    <p>
+                        TripAI brings destination discovery, flexible itineraries, group planning,
+                        weather updates, and budget tools together so you can spend less time
+                        coordinating and more time looking forward to the trip.
+                    </p>
+                    <Link to="/about" className="home-about-link">
+                        Get to know TripAI <ArrowRight size={17} />
+                    </Link>
                 </div>
-
-                <p>
-                    Your intelligent travel companion.
-                </p>
-
-                <div className="footer-links">
-                    <Link to="/about">About</Link>
-                    <Link to="/contact">Contact</Link>
-                    <Link to="/privacy">Privacy</Link>
-                    <Link to="/terms">Terms</Link>
+                <div className="home-about-note">
+                    <Sparkles size={23} aria-hidden="true" />
+                    <p>Designed around the way you want to travel.</p>
                 </div>
+            </section>
 
-                <p className="copyright">
-                    © 2026 TripAI. All rights reserved.
-                </p>
-            </footer>
+            <section className="home-trip-passes" aria-labelledby="home-trip-passes-title">
+                <div className="home-trip-passes-copy">
+                    <span>FLEXIBLE TRIP PLANS</span>
+                    <h2 id="home-trip-passes-title">Your first AI trip is free.</h2>
+                    <p>Need more later? Add trip credits only when you need them—no recurring subscription.</p>
+                </div>
+                <div className="home-trip-passes-offer">
+                    <strong>Pay once</strong>
+                    <span>only when you need a trip</span>
+                </div>
+                <Link className="home-trip-passes-link" to="/planner">
+                    Start planning <ArrowRight size={17} />
+                </Link>
+            </section>
+
         </div>
     );
 }
 
 function Destination({ image, name, country }) {
     return (
-        <div className="destination-card">
+        <Link
+            className="destination-card"
+            to={`/planner?destination=${encodeURIComponent(name)}`}
+            aria-label={`Plan a trip to ${name}`}
+        >
             <img
                 src={image}
                 alt={name}
@@ -266,7 +248,7 @@ function Destination({ image, name, country }) {
                 <h3>{name}</h3>
                 <p>{country}</p>
             </div>
-        </div>
+        </Link>
     );
 }
 

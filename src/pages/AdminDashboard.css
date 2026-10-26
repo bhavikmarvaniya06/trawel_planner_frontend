@@ -6,6 +6,49 @@
     color: #1d2a2e;
 }
 
+.destination-image-upload {
+    display: grid;
+    gap: 9px;
+    padding: 13px;
+    border: 1px dashed #b7cbc3;
+    border-radius: 10px;
+    color: #36574c;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.destination-image-upload input {
+    max-width: 100%;
+    font-size: 13px;
+}
+
+.destination-image-upload small {
+    color: #667085;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+.destination-admin-images {
+    display: grid;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #f4f7f6;
+}
+
+.destination-admin-images > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: #475467;
+    font-size: 13px;
+}
+
+.destination-admin-images > div span {
+    overflow-wrap: anywhere;
+}
+
 .admin-topbar {
     display: flex;
     justify-content: flex-end;
@@ -208,6 +251,18 @@
     grid-column: span 1;
 }
 .admin-section { background: #fff; border: 1px solid #dde5e5; border-radius: 14px; margin-top: 24px; overflow: hidden; }
+.admin-pricing-section { margin: 0 0 22px; }
+.admin-pricing-table { min-width: 560px; }
+.admin-pricing-table input {
+    width: 120px;
+    border: 1px solid #d5e0e1;
+    border-radius: 6px;
+    padding: 8px 9px;
+    color: #17252a;
+    font: inherit;
+}
+.admin-pricing-table input:focus { outline: 2px solid #5a9a91; outline-offset: 1px; }
+.admin-pricing-table button:disabled { cursor: wait; opacity: .6; }
 .section-heading { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid #e7eded; }
 .section-heading h2 { font-size: 1.2rem; margin: 0; color: #1c2b2e; }
 .section-heading span { color: #718084; font-size: .85rem; }

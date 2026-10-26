@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "https://trawel-planner-backend.onrender.com/api";
+export const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
+export const getApiResourceUrl = (path) => new URL(
+    path,
+    /^https?:\/\//i.test(API_BASE_URL) ? API_BASE_URL : window.location.origin
+).toString();
 
 const api = axios.create({
     baseURL: API_BASE_URL,
