@@ -37,6 +37,7 @@ function GoogleSignInButton({ onCredential, disabled = false }) {
     const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID?.trim();
 
     onCredentialRef.current = onCredential;
+    const isLocalFrontend = ["localhost", "127.0.0.1"].includes(window.location.hostname);
 
     useEffect(() => {
         if (!clientId || disabled || !buttonRef.current) {
@@ -96,8 +97,9 @@ function GoogleSignInButton({ onCredential, disabled = false }) {
                     )
             ) : (
                 <p className="auth-google-message" role="status">
-                    Google sign-in is not configured. Set REACT_APP_GOOGLE_CLIENT_ID in frontend/.env,
-                    then restart the frontend.
+                    {isLocalFrontend
+                        ? "Google sign-in is not configured. Set REACT_APP_GOOGLE_CLIENT_ID in frontend/.env, then restart the frontend."
+                        : "Google sign-in is not configured for this deployment. Set REACT_APP_GOOGLE_CLIENT_ID in your frontend hosting environment, then rebuild and redeploy the frontend."}
                 </p>
             )}
             <div className="auth-divider" aria-hidden="true">or</div>
