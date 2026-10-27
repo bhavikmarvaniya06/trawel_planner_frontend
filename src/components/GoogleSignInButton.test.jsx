@@ -3,7 +3,6 @@ import GoogleSignInButton from "./GoogleSignInButton";
 
 describe("GoogleSignInButton", () => {
     const originalClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-    const originalLocationDescriptor = Object.getOwnPropertyDescriptor(window, "location");
 
     beforeEach(() => {
         process.env.REACT_APP_GOOGLE_CLIENT_ID = "tripai-web-client-id";
@@ -25,7 +24,6 @@ describe("GoogleSignInButton", () => {
         }
 
         delete window.google;
-        Object.defineProperty(window, "location", originalLocationDescriptor);
     });
 
     test("renders the Google button and passes its signed credential to the page", async () => {
@@ -45,12 +43,8 @@ describe("GoogleSignInButton", () => {
         expect(window.google.accounts.id.renderButton.mock.calls[0][1].text).toBe("continue_with");
     });
 
-    test("directs deployed users to configure the hosting build environment", () => {
+    test("explains that production Google configuration requires a frontend rebuild", () => {
         delete process.env.REACT_APP_GOOGLE_CLIENT_ID;
-        Object.defineProperty(window, "location", {
-            configurable: true,
-            value: { ...window.location, hostname: "travel.example.com" },
-        });
 
         render(<GoogleSignInButton onCredential={jest.fn()} />);
 
@@ -58,14 +52,5 @@ describe("GoogleSignInButton", () => {
             "Set REACT_APP_GOOGLE_CLIENT_ID in your frontend hosting environment"
         );
         expect(screen.getByRole("status")).toHaveTextContent("rebuild and redeploy");
-    });
-
-    test("directs local users to configure and restart the frontend", () => {
-        delete process.env.REACT_APP_GOOGLE_CLIENT_ID;
-
-        render(<GoogleSignInButton onCredential={jest.fn()} />);
-
-        expect(screen.getByRole("status")).toHaveTextContent("in frontend/.env");
-        expect(screen.getByRole("status")).toHaveTextContent("restart the frontend");
     });
 });
