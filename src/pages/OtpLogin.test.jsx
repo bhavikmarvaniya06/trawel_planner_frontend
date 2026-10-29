@@ -62,4 +62,25 @@ describe("OtpLogin", () => {
         expect(screen.queryByPlaceholderText("Enter 6-digit OTP")).not.toBeInTheDocument();
         expect(screen.getByRole("button", { name: "Send OTP" })).toBeInTheDocument();
     });
+
+    it("requests and verifies an OTP for the entered email", async () => {
+        requestOtp.mockResolvedValue({ message: "OTP sent." });
+        loginWithOtp.mockResolvedValue({
+            user: { role: "user" },
+        });
+        renderOtpLogin();
+
+        fireEvent.change(screen.getByPlaceholderText("Enter your registered email"), {
+            target: { value: "traveler@example.com" },
+        });
+        fireEvent.click(screen.getByRole("button", { name: "Send OTP" }));
+
+        const otpInput = await screen.findByPlaceholderText("Enter 6-digit OTP");
+        fireEvent.change(otpInput, { target: { value: "123456" } });
+        fireEvent.click(screen.getByRole("button", { name: "Verify & Login" }));
+
+        await waitFor(() => {
+            expect(loginWithOtp).toHaveBeenCalledWith("traveler@example.com", "123456");
+        });
+    });
 });
