@@ -11,7 +11,7 @@ jest.mock("../services/api", () => ({
 }));
 
 function TestConsumer() {
-  const { user, loading, loginWithGoogle, loginWithOtp } = useAuth();
+  const { user, loading, loginWithGoogle } = useAuth();
 
   if (loading) {
     return <div>loading</div>;
@@ -21,7 +21,6 @@ function TestConsumer() {
     <>
       <div>{user ? user.email : "logged-out"}</div>
       <button onClick={() => loginWithGoogle("google-id-token")}>Continue with Google</button>
-      <button onClick={() => loginWithOtp("otp@example.com", "123456")}>Continue with OTP</button>
     </>
   );
 }
@@ -85,36 +84,4 @@ describe("AuthContext", () => {
     });
   });
 
-  it("verifies an OTP and persists the returned login session", async () => {
-    api.get.mockRejectedValue(new Error("Not logged in"));
-    api.post.mockResolvedValue({
-      data: {
-        token: "otp-session-token",
-        user: { id: "user-2", email: "otp@example.com", role: "user" },
-      },
-    });
-
-    render(
-      <AuthProvider>
-        <TestConsumer />
-      </AuthProvider>
-    );
-
-    fireEvent.click(await screen.findByRole("button", { name: "Continue with OTP" }));
-
-    await waitFor(() => {
-      expect(screen.getByText("otp@example.com")).toBeInTheDocument();
-    });
-
-    expect(api.post).toHaveBeenCalledWith("/auth/verify-otp", {
-      email: "otp@example.com",
-      otp: "123456",
-    });
-    expect(localStorage.getItem("token")).toBe("otp-session-token");
-    expect(JSON.parse(localStorage.getItem("user"))).toEqual({
-      id: "user-2",
-      email: "otp@example.com",
-      role: "user",
-    });
-  });
 });

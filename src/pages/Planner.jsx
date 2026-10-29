@@ -391,7 +391,7 @@ function Planner() {
                 : planResponse.data.generatedBy === "wikivoyage"
                     ? "Your guide-based itinerary is ready!"
                     : "Your AI itinerary is ready!";
-            setSuccess(`${planMessage} ${response.data.emailMessage || ""}`.trim());
+            setSuccess(planMessage);
 
 
             // ============================
@@ -399,12 +399,7 @@ function Planner() {
             // ============================
 
             setTimeout(() => {
-                navigate(`/trips/${response.data.trip._id}`, {
-                    state: {
-                        emailSent: response.data.emailSent,
-                        emailMessage: response.data.emailMessage,
-                    },
-                });
+                navigate(`/trips/${response.data.trip._id}`);
             }, 1800);
 
 

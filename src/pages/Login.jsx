@@ -186,14 +186,6 @@ function Login() {
                     <p className="auth-footer alt-link">
                         <Link to="/home">Go to Home</Link>
                     </p>
-
-                    <button
-                        type="button"
-                        className="secondary-link-btn"
-                        onClick={() => navigate("/otp-login")}
-                    >
-                        Login using OTP
-                    </button>
                 </div>
 
             </div>

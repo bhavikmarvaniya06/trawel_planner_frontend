@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 function SiteFooter() {
     const { pathname } = useLocation();
     const { user } = useAuth();
-    const hiddenRoutes = ["/login", "/register", "/otp-login", "/admin"];
+    const hiddenRoutes = ["/login", "/register", "/admin"];
 
     if (hiddenRoutes.includes(pathname)) return null;
 

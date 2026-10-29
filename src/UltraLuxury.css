@@ -1217,13 +1217,6 @@ a {
     color: var(--luxury-cyan);
 }
 
-.trip-details-page.trip-details-page .trip-email-action button {
-    border: 1px solid rgba(216, 186, 120, 0.42);
-    border-radius: 999px;
-    background: linear-gradient(135deg, #dfc78e, #bf9f5d);
-    color: #17140d;
-}
-
 .admin-page.admin-page {
     background:
         radial-gradient(ellipse at 88% 0%, rgba(24, 89, 119, 0.15), transparent 38%),
@@ -2031,7 +2024,6 @@ body {
 .contact-page.contact-page .contact-form button,
 .about-page.about-page .about-cta-btn,
 .dashboard-page.dashboard-page :is(.create-trip-btn, .recommendation-filters button, .group-invitation-card button, .weather-update-actions button, .recommendation-plan),
-.trip-details-page.trip-details-page .trip-email-action button,
 .auth-card .auth-button,
 .feedback-widget :is(.feedback-submit, .feedback-success button) {
     border-color: rgba(198, 164, 92, 0.58);

@@ -7,7 +7,6 @@ import {
     Wallet,
     MapPin,
     Sparkles,
-    Mail,
     CloudSun,
     CloudRain,
     Wind,
@@ -34,16 +33,11 @@ function TripDetails() {
     const [loading, setLoading] = useState(true);
 
     const [error, setError] = useState("");
-    const [emailSending, setEmailSending] = useState(false);
-    const [emailMessage, setEmailMessage] = useState("");
-    const [emailError, setEmailError] = useState("");
     const [weather, setWeather] = useState(null);
     const [weatherLoading, setWeatherLoading] = useState(true);
     const [weatherError, setWeatherError] = useState("");
 
-    const ownerId = typeof trip?.user === "string" ? trip.user : trip?.user?._id;
     const currentUserId = user?._id || user?.id;
-    const isTripOwner = Boolean(ownerId && currentUserId && String(ownerId) === String(currentUserId));
 
 
     useEffect(() => {
@@ -123,24 +117,6 @@ function TripDetails() {
             );
         } finally {
             setWeatherLoading(false);
-        }
-    };
-
-    const handleEmailTripPdf = async () => {
-        setEmailSending(true);
-        setEmailMessage("");
-        setEmailError("");
-
-        try {
-            const response = await api.post(`/trips/${id}/email`);
-            setEmailMessage(response.data.message || "Trip PDF sent to your login email.");
-        } catch (emailRequestError) {
-            setEmailError(
-                emailRequestError.response?.data?.message ||
-                "Unable to send the trip PDF. Check your backend email settings."
-            );
-        } finally {
-            setEmailSending(false);
         }
     };
 
@@ -259,17 +235,6 @@ function TripDetails() {
                     </p>
 
                 </div>
-
-                {isTripOwner && (
-                    <div className="trip-email-action">
-                        <button type="button" onClick={handleEmailTripPdf} disabled={emailSending}>
-                            <Mail size={17} />
-                            {emailSending ? "Sending PDF..." : "Email trip PDF"}
-                        </button>
-                        {emailMessage && <p role="status">{emailMessage}</p>}
-                        {emailError && <p role="alert">{emailError}</p>}
-                    </div>
-                )}
 
             </section>
 

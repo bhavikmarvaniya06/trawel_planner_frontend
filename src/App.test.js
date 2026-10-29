@@ -14,8 +14,6 @@ jest.mock('./context/AuthContext', () => ({
     loading: false,
     login: mockLogin,
     register: jest.fn(),
-    requestOtp: jest.fn(),
-    loginWithOtp: jest.fn(),
     logout: jest.fn(),
   }),
 }));
@@ -27,6 +25,13 @@ jest.mock('./services/api', () => ({
 
 test('opens the login page at the root URL', async () => {
   window.history.replaceState({}, '', '/');
+  render(<App />);
+
+  expect(await screen.findByRole('heading', { name: /welcome back/i })).toBeInTheDocument();
+});
+
+test('redirects the retired OTP login route to the standard login page', async () => {
+  window.history.replaceState({}, '', '/otp-login');
   render(<App />);
 
   expect(await screen.findByRole('heading', { name: /welcome back/i })).toBeInTheDocument();

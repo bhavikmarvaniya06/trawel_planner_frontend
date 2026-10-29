@@ -139,8 +139,6 @@ test("saves a published package through the existing trip-credit planner flow", 
     api.post.mockResolvedValue({
         data: {
             trip: { _id: "trip-1" },
-            emailSent: false,
-            emailMessage: "",
         },
     });
 

@@ -12,7 +12,6 @@ const Home = lazy(() => import(/* webpackPrefetch: true */ "./pages/Home"));
 const Explore = lazy(() => import(/* webpackPrefetch: true */ "./pages/Explore"));
 const About = lazy(() => import(/* webpackPrefetch: true */ "./pages/About"));
 const Planner = lazy(() => import(/* webpackPrefetch: true */ "./pages/Planner"));
-const OtpLogin = lazy(() => import(/* webpackPrefetch: true */ "./pages/OtpLogin"));
 const Register = lazy(() => import(/* webpackPrefetch: true */ "./pages/Register"));
 const Dashboard = lazy(() => import(/* webpackPrefetch: true */ "./pages/Dashboard"));
 const TripDetails = lazy(() => import(/* webpackPrefetch: true */ "./pages/TripDetails"));
@@ -34,7 +33,6 @@ function App() {
       >
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/otp-login" element={<OtpLogin />} />
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/home" element={<Home />} />

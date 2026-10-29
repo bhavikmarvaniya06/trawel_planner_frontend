@@ -92,24 +92,6 @@ export const AuthProvider = ({ children }) => {
         return response.data;
     };
 
-    const requestOtp = async (email) => {
-        const response = await api.post("/auth/request-otp", { email });
-        return response.data;
-    };
-
-    const loginWithOtp = async (email, otp) => {
-        const response = await api.post("/auth/verify-otp", { email, otp });
-
-        const { token, user } = response.data;
-
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
-
-        setUser(user);
-
-        return response.data;
-    };
-
     const loginWithGoogle = async (idToken) => {
         const response = await api.post("/auth/google", { idToken });
 
@@ -140,8 +122,6 @@ export const AuthProvider = ({ children }) => {
                 loading,
                 login,
                 register,
-                requestOtp,
-                loginWithOtp,
                 loginWithGoogle,
                 logout,
             }}
