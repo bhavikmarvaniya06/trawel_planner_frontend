@@ -57,8 +57,32 @@ test("renders published destination package details and its Planner link", async
         "href",
         "/planner?destinationPackageId=destination-1"
     );
+    expect(screen.getAllByRole("link", { name: "Plan a trip" }).find(
+        (link) => link.getAttribute("href") === "/planner?destination=Lake%20District"
+    )).toHaveAttribute(
+        "href",
+        "/planner?destination=Lake%20District"
+    );
     expect(screen.getByRole("img", { name: "Lake District" })).toHaveAttribute(
         "src",
         "https://api.example.com/api/destinations/destination-1/images/image-1"
+    );
+});
+
+test("provides a direct planner link for every featured destination", async () => {
+    api.get.mockResolvedValue({ data: { destinations: [] } });
+
+    render(
+        <MemoryRouter>
+            <Explore />
+        </MemoryRouter>
+    );
+
+    await screen.findByText("Where will you go next?");
+    const planLinks = screen.getAllByRole("link", { name: "Plan a trip" });
+    expect(planLinks).toHaveLength(44);
+    expect(planLinks.find((link) => link.getAttribute("href") === "/planner?destination=Bali")).toHaveAttribute(
+        "href",
+        "/planner?destination=Bali"
     );
 });

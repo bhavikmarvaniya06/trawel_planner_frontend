@@ -250,7 +250,15 @@ function Explore() {
                                     </div>
                                 )}
 
-                                {destination._id ? (
+                                <Link
+                                    to={`/planner?destination=${encodeURIComponent(destination.name)}`}
+                                    className="destination-link"
+                                >
+                                    Plan a trip
+                                    <ArrowRight size={16} />
+                                </Link>
+
+                                {destination._id && (
                                     <>
                                         <Link
                                             to={`/planner?destinationPackageId=${encodeURIComponent(destination._id)}`}
@@ -267,14 +275,6 @@ function Explore() {
                                             Continues to your TripAI planner and uses your existing trip-credit rules.
                                         </small>
                                     </>
-                                ) : (
-                                    <Link
-                                        to={`/planner?destination=${encodeURIComponent(destination.name)}`}
-                                        className="destination-link"
-                                    >
-                                        Plan a trip
-                                        <ArrowRight size={16} />
-                                    </Link>
                                 )}
 
                             </div>
