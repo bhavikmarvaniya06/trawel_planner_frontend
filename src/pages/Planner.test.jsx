@@ -27,6 +27,27 @@ afterEach(() => {
     jest.clearAllMocks();
 });
 
+test("date picker starts at today and rejects dates in the past", async () => {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    const today = now.toISOString().slice(0, 10);
+
+    render(
+        <MemoryRouter initialEntries={["/planner"]}>
+            <Planner />
+        </MemoryRouter>
+    );
+
+    const startDate = screen.getByLabelText("Start date");
+    expect(startDate).toHaveAttribute("min", today);
+
+    fireEvent.change(startDate, { target: { value: "2000-01-01" } });
+    fireEvent.submit(startDate.closest("form"));
+
+    expect(await screen.findByText("Choose a start date that is today or later.")).toBeInTheDocument();
+    expect(api.post).not.toHaveBeenCalled();
+});
+
 test("optimizes selected places and displays route metrics, map and OSM directions", async () => {
     api.post.mockImplementation(async (path) => {
         if (path === "/trips/suggestions") {

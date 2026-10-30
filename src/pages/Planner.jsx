@@ -22,6 +22,11 @@ import OptimizedRouteMap from "../components/OptimizedRouteMap";
 
 import "./Planner.css";
 
+const getLocalDateValue = () => {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    return now.toISOString().slice(0, 10);
+};
 
 function Planner() {
 
@@ -321,6 +326,12 @@ function Planner() {
             const readFormValue = (name) => form.elements.namedItem(name)?.value || "";
             const startDate = readFormValue("startDate");
             const days = Number(readFormValue("days"));
+
+            if (!startDate || startDate < getLocalDateValue()) {
+                setError("Choose a start date that is today or later.");
+                return;
+            }
+
             const endDate = new Date(`${startDate}T00:00:00.000Z`);
             endDate.setUTCDate(endDate.getUTCDate() + days - 1);
 
@@ -760,7 +771,13 @@ function Planner() {
 
                             <div>
                                 <label htmlFor="trip-start-date">Start date</label>
-                                <input id="trip-start-date" type="date" name="startDate" required />
+                                <input
+                                    id="trip-start-date"
+                                    type="date"
+                                    name="startDate"
+                                    min={getLocalDateValue()}
+                                    required
+                                />
                             </div>
 
 
